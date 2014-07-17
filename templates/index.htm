@@ -13,7 +13,7 @@
   <body>
 	 <div id="page">
          <!-- schaue nach ob eine Session besteht, falls ja, zeige andere Links an als für nicht eingeloggte Benutzer -->
-    <div>Blog: <a href="/">Start</a> 
+    <div>Blog: <a href="/">Start</a> &mdash; <a href="/login">Login</a>
 		
 		 {% if session['username'] %} {% endif %} 
     <hr style='margin-top:20px;'>
