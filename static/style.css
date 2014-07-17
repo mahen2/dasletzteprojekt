@@ -1,0 +1,25 @@
+body {font-family: 'Droid Sans', sans-serif;}
+#page {width:95%; text-align: justify; margin-top:4%; margin-left:2.5%;}
+#z_div {display:none;}
+td {border:1px solid black; max-width:170px; text-align:left;padding-left:5px;padding-right:5px;padding-top:10px; padding-bottom:10px; vertical-align:middle;}
+table.calendar td {width:100px;height:100px; vertical-align:top;}
+th {text-align:center; padding-left:5px;padding-right:5px;padding-top:10px; padding-bottom:10px;}
+.highlight {background-color:lightblue;}
+table {border-collapse:collapse;}
+input {font-family: 'Droid Sans', sans-serif; font-size:16px;}
+hr {border-top: solid 1px lightblue;border-bottom:0;border-left: 0;border-right: 0;height:1px;}
+.pubtable td {padding-left:10px; vertical-align:middle; padding-right:10px; text-align:left;}
+select {font-family: 'Droid Sans', sans-serif; font-size:14px;}
+.optional {display:none;}
+a {color:blue;text-decoration:underline;}
+a:visted {color:blue; text-decoration:underline;}
+.nohighlight {color:initial;text-decoration:none;}
+ul.edit { list-style-image: url('page_edit.png');}
+ul.delete { list-style-image: url('delete.png');}
+ul.accept { list-style-image: url('accept.png'); background-color:lightgreen; font-weight:bold; padding:15px 15px 15px 30px; width:400px;}
+ul.error { list-style-image: url('exclamation.png'); background-color:#FC6262; font-weight:bold; padding:15px 15px 15px 30px; width:400px;}
+.searchform { display:inline; padding:10px;}
+.searchform input {border: 1px solid black; padding: 5px;}
+ul.add { list-style-image: url('add.png');}
+ul.edit li {margin-top:25px;}
+ul.delete a, ul.edit a , ul.add a {color:initial; text-decoration:none;}
