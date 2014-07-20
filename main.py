@@ -1,5 +1,5 @@
 # −*−coding:utf−8−*−   
-# Autor: Giulia Kirstein, Daniel Gros, Fabian Pegel
+# Autor: Mina Habsaoui, Maria Henkel, Fabian Pegel
 # Mai 2014
 # Projektseminar Angewandte Informationswissenschaft   
 # Codeteile übernommen vom "Mega-Flask-Tutorial" http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world                   
@@ -13,8 +13,6 @@ from wtforms import TextField, BooleanField, PasswordField, HiddenField
 from wtforms.validators import Required, EqualTo, Length, ValidationError
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from datetime import timedelta, date
-from jinja2 import Environment, PackageLoader
-env = Environment(loader=PackageLoader('main', 'templates'))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'jHgFtjjGFdE5578ijbDDegh'
 app.config['CSRF_ENABLED'] = True
@@ -116,6 +114,39 @@ class Entry(db.Model):
 
 
 
+# Datums-Format checken bei Formularen 
+def is_german_date(form, field):
+    datearray = field.data.split('.')
+    if len(datearray) == 3:
+        if len(datearray[0])!=2 or int(datearray[0])>31:
+             raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+        if len(datearray[1])!=2 or int(datearray[1])>12:
+            raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+        if len(datearray[2])!=4:
+            raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+        for element in datearray:
+            if element.isdigit() == False:
+                raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+    else: 
+        raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+
+
+# EditForm-Klasse zum Bearbeiten und Anlegen von Eintragsdaten
+class EditForm(Form):
+    userid =      TextField('userid')
+    vorname = TextField('vorname', validators = [Required(u"Bitte Feld ausfüllen!")])
+    name = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
+    titel = TextField('titel')
+    strasse = TextField('strasse')
+    plz = TextField('plz')
+    ort = TextField('ort')
+    geburtsdatum = TextField('geburtsdatum', validators = [Required(u"Bitte Feld ausfüllen!"), is_german_date])
+    festnetz = TextField('festnetz')
+    mobil = TextField('mobil')
+    email = TextField('email')
+    homepage = TextField('homepage')
+    twitter = TextField('twitter')   
+
 # Suchfeld-Klasse
 class SearchForm(Form): 
     searchfield = TextField('searchfield', validators = [Required(u"Bitte Feld ausfüllen!")])
@@ -194,6 +225,51 @@ def search():
         return redirect('/')
     return render_template('search.htm', searchform=searchform, begriff=begriff, searchentries=searchentries, number_of_results=number_of_results)    
  
+# Einträge zum bearebiten anzeigen oder Einzeleinträge bearbeiten
+@app.route('/edit', defaults={'id': None})
+@app.route('/edit/<id>', methods = ['GET', 'POST'])
+@login_required
+def edit(id):
+    form = EditForm()
+    searchform = SearchForm(csrf_enabled=False)
+    entries = Entry.query.with_entities(Entry.id, Entry.vorname,Entry.name,Entry.titel,Entry.strasse,Entry.plz,Entry.ort, Entry.geburtsdatum, Entry.festnetz, Entry.mobil, Entry.email, Entry.homepage,Entry.twitter).order_by(desc(Entry.id))
+    # wenn id gegeben ist, zeige nicht alle Einträge, sondern einen zum bearbeiten
+    if id is not None:
+        if form.validate_on_submit():
+            # text()-Funktion escapet den string
+            query = text("UPDATE daten SET vorname=:vorname, name=:name, titel=:titel,strasse=:strasse, plz=:plz, ort=:ort, geburtsdatum=:geburtsdatum, festnetz=:festnetz, mobil=:mobil, email=:email, homepage=:homepage, twitter=:twitter where id=:userid ;")
+            flash("Eintrag bearbeitet!", 'accept')
+            # Daten ändern
+            db.engine.execute(query, vorname=form.vorname.data, name=form.name.data, titel=form.titel.data, strasse=form.strasse.data, plz=form.plz.data, ort=form.ort.data, geburtsdatum=form.geburtsdatum.data, festnetz=form.festnetz.data, mobil=form.mobil.data, email=form.email.data, homepage=form.homepage.data, twitter=form.twitter.data, userid=form.userid.data)
+            
+        entries = Entry.query.filter_by(id=id).with_entities(Entry.id, Entry.vorname,Entry.name,Entry.titel,Entry.strasse,Entry.plz,Entry.ort, Entry.geburtsdatum, Entry.festnetz, Entry.mobil, Entry.email, Entry.homepage,Entry.twitter).first()
+    return render_template('edit.htm', entries=entries, id=id , form=form, searchform=searchform)  
+
+
+# Neuen Eintrag anlegen
+@app.route('/new', methods = ['GET', 'POST'])
+@login_required
+def new():
+    searchform = SearchForm(csrf_enabled=False)
+    form = EditForm()
+    if form.validate_on_submit():
+        query = text("INSERT INTO daten ('id','vorname','name','titel','strasse','plz','ort','geburtsdatum','festnetz','mobil','email','homepage','twitter') VALUES (NULL, :vorname,:name,:titel,:strasse,:plz,:ort,:geburtsdatum,:festnetz,:mobil,:email,:homepage,:twitter);")
+        db.engine.execute(query, vorname=form.vorname.data, name=form.name.data, titel=form.titel.data, strasse=form.strasse.data, plz=form.plz.data, ort=form.ort.data, geburtsdatum=form.geburtsdatum.data, festnetz=form.festnetz.data, mobil=form.mobil.data, email=form.email.data, homepage=form.homepage.data, twitter=form.twitter.data)
+        flash("Eintrag wurde angelegt!", 'accept')
+        return redirect('/edit')
+    else:
+        return render_template('new.htm', form=form, searchform=searchform)
+    
+    
+# Eintrag löschen
+@app.route('/delete/<id>')
+@login_required
+def delete(id):
+    if id is not None:
+        query = text("DELETE FROM daten WHERE id = :id;")
+        db.engine.execute(query, id=id)
+        flash(u"Benutzer mit der ID " + str(id) + u" gelöscht!", 'accept')
+        return redirect('/edit')
 
 # Einloggen
 @app.route('/login', methods = ['GET', 'POST']) 
