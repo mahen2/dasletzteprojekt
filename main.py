@@ -13,15 +13,45 @@ from wtforms import TextField, BooleanField, PasswordField, HiddenField
 from wtforms.validators import Required, EqualTo, Length, ValidationError
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from datetime import timedelta, date
-
-
+from jinja2 import Environment, PackageLoader
+env = Environment(loader=PackageLoader('main', 'templates'))
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'jHgFtjjGFdE5678ijbDDegh'
+app.config['SECRET_KEY'] = 'jHgFtjjGFdE5578ijbDDegh'
 app.config['CSRF_ENABLED'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.sqlite'
 db = SQLAlchemy(app)
 lm = LoginManager()
 lm.init_app(app)
+
+
+def nl2br(value): 
+    return value.replace('\n','<br>\n')
+app.jinja_env.globals.update(nl2br=nl2br)
+
+def teile_text_zum_weiterlesen(text):
+    text_teile = text.split('[weiterlesen]')
+    return text_teile
+app.jinja_env.globals.update(teile_text_zum_weiterlesen=teile_text_zum_weiterlesen)
+
+def entferne_weiterlesen_marker(text):
+    return text.replace('[weiterlesen]','')
+app.jinja_env.globals.update(entferne_weiterlesen_marker=entferne_weiterlesen_marker)
+
+def highlight_word(text, word):
+    if word:
+        text_list = text.split(" ")
+        text_list_neu = []
+        for element in text_list:
+            if element.lower().startswith(word.lower()):
+                text_list_neu.append('<span style="background-color:yellow;">'+element+'</span>')
+            else:
+                text_list_neu.append(element)
+        
+        return " ".join(text_list_neu)
+    else:
+        print 22222
+        return text
+app.jinja_env.globals.update(highlight_word=highlight_word)
 
 # Userklasse definieren
 class User(db.Model):
@@ -31,6 +61,8 @@ class User(db.Model):
   id = db.Column('id', db.Integer, primary_key=True)
   passwort = db.Column(db.String(100))
   username = db.Column(db.String(200))
+  vorname = db.Column(db.String(200))
+  nachname = db.Column(db.String(200))
   def is_authenticated(self):
       return True
 
@@ -52,6 +84,8 @@ class User(db.Model):
       self.id = id
       self.passwort = passwort
       self.username = username
+      self.vorname = vorname
+      self.nachname = nachname
 
 # User-Loader für den Login
 @lm.user_loader
@@ -65,85 +99,22 @@ class Entry(db.Model):
   __tablename__ = 'blogeintrag' 
   id = db.Column('id', db.Integer, primary_key=True)
   titel = db.Column(db.String(200))
-  text = db.Column(db.String(200))
-  
+  text = db.Column(db.String(200000))
+  url_titel = db.Column(db.String(200))
+  datum = db.Column(db.String(200))
+  geschriebenvonbenutzername = db.Column(db.String(200))
   def __init__(self, id, vorname, nachname, titel, strasse, plz, ort, geburtsdatum, festnetz, mobil, email, homepage, twitter):
       # Initializes the fields with entered data
       # and sets the published date to the current time
       self.id = id
       self.titel = titel
       self.text = text
+      self.url_titel = url_titel
+      self.datum = datum
+      self.geschriebenvonbenutzername = geschriebenvonbenutzername
       
-# Datums-Format checken
-def is_german_date_single(date):
-    datearray = date.split('.')
-    if len(datearray) == 3:
-        if len(datearray[0])!=2 or int(datearray[0])>31:
-             return False
-        if len(datearray[1])!=2 or int(datearray[1])>12:
-            return False
-        if len(datearray[2])!=4:
-            return False
-        for element in datearray:
-            if element.isdigit() == False:
-                return False
-    else: 
-        return False
-
-      
-# Funktion zum überprüfen, ob in x Tagen Geburtstag ist    
-def birthday_in_x_days(xdays, birthdate):
-    if is_german_date_single(birthdate) == False:
-            return False
-    birthdate_array=birthdate.split('.')
-    birthdate_new = date(int(birthdate_array[2]), int(birthdate_array[1]), int(birthdate_array[0]))
-    today_future = date.today()+timedelta(days=xdays)
-	
-	# dd ist datedifference
-	# Ersetzen von Geburtsjahr mit aktuellem Jahr, um nur Tagesdifferenz zu bekommen
-    birthday = date(today_future.year, birthdate_new.month, birthdate_new.day)
-    dd = today_future - birthday
-    if dd.days <= xdays and dd.days>=0:
-		print "Geburtstag innerhalb der nächsten "+str(xdays)+" Tage"
-		return True
-		
-    else:
-        return False
 
 
-
-# Datums-Format checken bei Formularen 
-def is_german_date(form, field):
-    datearray = field.data.split('.')
-    if len(datearray) == 3:
-        if len(datearray[0])!=2 or int(datearray[0])>31:
-             raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
-        if len(datearray[1])!=2 or int(datearray[1])>12:
-            raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
-        if len(datearray[2])!=4:
-            raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
-        for element in datearray:
-            if element.isdigit() == False:
-                raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
-    else: 
-        raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
-
-
-# EditForm-Klasse zum Bearbeiten und Anlegen von Eintragsdaten
-class EditForm(Form):
-    userid =      TextField('userid')
-    vorname = TextField('vorname', validators = [Required(u"Bitte Feld ausfüllen!")])
-    name = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
-    titel = TextField('titel')
-    strasse = TextField('strasse')
-    plz = TextField('plz')
-    ort = TextField('ort')
-    geburtsdatum = TextField('geburtsdatum', validators = [Required(u"Bitte Feld ausfüllen!"), is_german_date])
-    festnetz = TextField('festnetz')
-    mobil = TextField('mobil')
-    email = TextField('email')
-    homepage = TextField('homepage')
-    twitter = TextField('twitter')   
 
 # Suchfeld-Klasse
 class SearchForm(Form): 
@@ -168,31 +139,24 @@ class ChangePassForm(Form):
 @app.route('/')
 def hello_world(): 
     searchform = SearchForm(csrf_enabled=False)
-    entries=Entry.query.with_entities(Entry.titel, Entry.text) 
+    entries=Entry.query.with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername) 
     return render_template('anzeige.htm', entries=entries, searchform=searchform)   
 	
-# Auswertungen
-@app.route('/auswertungen')
-def auswertungen(): 
-    searchform = SearchForm(csrf_enabled=False)
-    # Anzahl der Personen pro Stadt
-    orte = db.engine.execute('SELECT ort, count(ort) as anzahl FROM daten group by ort order by anzahl desc;')
-    entries=Entry.query.with_entities(Entry.vorname,Entry.name, Entry.geburtsdatum)
-    correct_entries = []
-    ages = []
-    # Geburtstagsdictionary für den Jahreskalender
-    birthday_dict = {'01':[],'02':[],'03':[],'04':[],'05':[],'06':[],'07':[],'08':[], '09':[],'10':[],'11':[],'12':[]}
     
-    # Geburtstagsdictionary und Alter entsprechend füllen
-    for entry in entries:
-        if is_german_date_single(entry.geburtsdatum) != False:
-            birthday_dict[entry.geburtsdatum.split('.')[1]].append(entry)
-        if birthday_in_x_days(30,entry.geburtsdatum):
-            correct_entries.append(entry)
-            ages.append(date.today().year-int(entry.geburtsdatum.split('.')[2]))
-    print correct_entries
-    print birthday_dict
-    return render_template('auswertungen.htm', searchform=searchform, correct_entries=correct_entries, ages=ages, birthday_dict=birthday_dict, orte=orte)   
+@app.route('/artikel/<url_titel>', methods = ['GET', 'POST'])
+def artikel(url_titel):
+    highlight=''
+    if request.args.get('highlight'):
+        highlight = request.args.get('highlight')
+    print "hughlight: "+highlight
+    searchform = SearchForm(csrf_enabled=False)
+    entries = Entry.query.filter_by(url_titel=url_titel).with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername)
+    
+    k_query = text("SELECT * FROM kommentar WHERE blogeintragid = (SELECT id FROM blogeintrag WHERE url_titel = 'witness_to_a_shelling:_first-hand_account_of_deadly_strike_on_gaza_port'")
+    kommentare = db.engine.execute(text("SELECT * FROM kommentar WHERE blogeintragid = (SELECT id FROM blogeintrag WHERE url_titel = :url_titel)"), url_titel=url_titel)
+    
+    return render_template('anzeige_single.htm', entries=entries, searchform=searchform, highlight=highlight,kommentare=kommentare)
+
 
 
 # Profilseite, bisher zum Passwort ändern
@@ -223,57 +187,13 @@ def search():
         begriff = request.args['searchfield']
         begriff_trunk = '%'+begriff+'%'
         # in allen Feldern suchen, auch Bestandteil-Suche erlauben (deshalb Anfang und Ende mit % trunkiert)
-        query = text("SELECT vorname,name,titel,strasse,plz,ort,geburtsdatum,festnetz,mobil,email,homepage,twitter FROM daten WHERE (vorname  || ' ' || name like :begriff_trunk) or vorname like :begriff_trunk or name like :begriff_trunk or strasse like :begriff_trunk or ort like :begriff_trunk or plz like :begriff_trunk or geburtsdatum like :begriff_trunk or homepage like :begriff_trunk or twitter like :begriff_trunk or mobil like :begriff_trunk or festnetz like :begriff_trunk or email like :begriff_trunk;")
+        query = text("SELECT titel,text,url_titel FROM blogeintrag WHERE titel like :begriff_trunk or text like :begriff_trunk group by id; ")
         searchentries = db.engine.execute(query, begriff_trunk=begriff_trunk)
+        number_of_results = db.engine.execute(text("SELECT count(id) as anzahl from blogeintrag where text like :begriff_trunk or titel like :begriff_trunk"), begriff_trunk=begriff_trunk)
     else:
         return redirect('/')
-    return render_template('search.htm', searchform=searchform, begriff=begriff, searchentries=searchentries)    
+    return render_template('search.htm', searchform=searchform, begriff=begriff, searchentries=searchentries, number_of_results=number_of_results)    
  
-# Einträge zum bearebiten anzeigen oder Einzeleinträge bearbeiten
-@app.route('/edit', defaults={'id': None})
-@app.route('/edit/<id>', methods = ['GET', 'POST'])
-@login_required
-def edit(id):
-    form = EditForm()
-    searchform = SearchForm(csrf_enabled=False)
-    entries = Entry.query.with_entities(Entry.id, Entry.vorname,Entry.name,Entry.titel,Entry.strasse,Entry.plz,Entry.ort, Entry.geburtsdatum, Entry.festnetz, Entry.mobil, Entry.email, Entry.homepage,Entry.twitter).order_by(desc(Entry.id))
-    # wenn id gegeben ist, zeige nicht alle Einträge, sondern einen zum bearbeiten
-    if id is not None:
-        if form.validate_on_submit():
-            # text()-Funktion escapet den string
-            query = text("UPDATE daten SET vorname=:vorname, name=:name, titel=:titel,strasse=:strasse, plz=:plz, ort=:ort, geburtsdatum=:geburtsdatum, festnetz=:festnetz, mobil=:mobil, email=:email, homepage=:homepage, twitter=:twitter where id=:userid ;")
-            flash("Eintrag bearbeitet!", 'accept')
-            # Daten ändern
-            db.engine.execute(query, vorname=form.vorname.data, name=form.name.data, titel=form.titel.data, strasse=form.strasse.data, plz=form.plz.data, ort=form.ort.data, geburtsdatum=form.geburtsdatum.data, festnetz=form.festnetz.data, mobil=form.mobil.data, email=form.email.data, homepage=form.homepage.data, twitter=form.twitter.data, userid=form.userid.data)
-            
-        entries = Entry.query.filter_by(id=id).with_entities(Entry.id, Entry.vorname,Entry.name,Entry.titel,Entry.strasse,Entry.plz,Entry.ort, Entry.geburtsdatum, Entry.festnetz, Entry.mobil, Entry.email, Entry.homepage,Entry.twitter).first()
-    return render_template('edit.htm', entries=entries, id=id , form=form, searchform=searchform)  
-
-
-# Neuen Eintrag anlegen
-@app.route('/new', methods = ['GET', 'POST'])
-@login_required
-def new():
-    searchform = SearchForm(csrf_enabled=False)
-    form = EditForm()
-    if form.validate_on_submit():
-        query = text("INSERT INTO daten ('id','vorname','name','titel','strasse','plz','ort','geburtsdatum','festnetz','mobil','email','homepage','twitter') VALUES (NULL, :vorname,:name,:titel,:strasse,:plz,:ort,:geburtsdatum,:festnetz,:mobil,:email,:homepage,:twitter);")
-        db.engine.execute(query, vorname=form.vorname.data, name=form.name.data, titel=form.titel.data, strasse=form.strasse.data, plz=form.plz.data, ort=form.ort.data, geburtsdatum=form.geburtsdatum.data, festnetz=form.festnetz.data, mobil=form.mobil.data, email=form.email.data, homepage=form.homepage.data, twitter=form.twitter.data)
-        flash("Eintrag wurde angelegt!", 'accept')
-        return redirect('/edit')
-    else:
-        return render_template('new.htm', form=form, searchform=searchform)
-    
-    
-# Eintrag löschen
-@app.route('/delete/<id>')
-@login_required
-def delete(id):
-    if id is not None:
-        query = text("DELETE FROM daten WHERE id = :id;")
-        db.engine.execute(query, id=id)
-        flash(u"Benutzer mit der ID " + str(id) + u" gelöscht!", 'accept')
-        return redirect('/edit')
 
 # Einloggen
 @app.route('/login', methods = ['GET', 'POST']) 

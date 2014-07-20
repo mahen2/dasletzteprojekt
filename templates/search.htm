@@ -6,25 +6,20 @@
 <h1>Adressbuch</h1>
 
 <h2>Suche</h2>
-Suche nach <strong>{{begriff}}</strong>
+Der Begriff <strong><em>{{begriff}}</em></strong> kommt in folgenden Artikeln vor:<br><br>
 
-<table style="width:600px;"> 
-	<th>Vorname</th> <th>Name</th> <th>Titel</th> <th>Straße</th> <th>PLZ</th> <th>Ort</th> <th>Geburtsdatum</th> <th>Festnetz</th> <th>Mobil</th> <th>E-Mail</th> <th>Homepage</th> <th>Twitter</th>
+
+<ul>
 		{% for line in searchentries: %}
-			<tr>
-			{% for eintrag in line:  %}
-			
-            {% if begriff|lower() == eintrag|lower(): %}
-            <!-- wenn Suchbegriffe übereinstimmen, hebe sie gelb hervor -->
-			<td style="background-color:yellow;">{{eintrag}}</td>
-            {% else: %}
-            <td>{{eintrag}}</td>
-            {% endif %}
-			
-			{% endfor %}
-		</tr>
+				<li><a href="/artikel/{{line['url_titel']}}?highlight={{begriff}}">{{line['titel']}}</a></li>
+		
 		{% endfor %}
-</table>
-
+		{% for row in number_of_results: %}
+		{% if row['anzahl']==0: %}	
+				<li><strong>Keine Einträge gefunden!</strong></li>
+		{% endif %}
+		{% endfor %}
+		
+</ul>
 
 {% endblock %}

@@ -23,3 +23,4 @@ ul.error { list-style-image: url('exclamation.png'); background-color:#FC6262; f
 ul.add { list-style-image: url('add.png');}
 ul.edit li {margin-top:25px;}
 ul.delete a, ul.edit a , ul.add a {color:initial; text-decoration:none;}
+.comment {padding:15px; border: 1px solid black; width:400px; margin:10px;}

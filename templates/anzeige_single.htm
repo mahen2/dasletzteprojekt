@@ -1,0 +1,32 @@
+<!-- extend from base layout -->
+{% extends "index.htm" %}
+
+{% block content %}
+
+<h1>Blog</h1>
+
+
+	
+		{% for line in entries: %}
+			
+			<h2><a href="/artikel/{{line['url_titel']}}">{{nl2br(line['titel']) | safe}}</a></h2>
+			<small>
+				geschrieben von: {{line['geschriebenvonbenutzername']}}<br>
+				Datum: {{line['datum']}}
+			</small>
+			<p>{{entferne_weiterlesen_marker(nl2br(highlight_word(line['text'], highlight))) | safe}}</p>
+			<hr />
+			
+			
+		{% endfor %}
+<p>
+	<h3>Kommentare</h3>
+		
+		{% for comment in kommentare: %}
+		<div class="comment">
+			<span class="commentator_name">{{comment['name']}}</span>:
+			<p>{{comment['text']}}</p>
+		</div>
+		{% endfor %}
+</p>
+{% endblock %}
