@@ -22,7 +22,7 @@
    
     {% for category, message in messages %}
      <ul class="{{category}}">
-        <li>{{ message }}</li>
+        <li>{{ message | safe}}</li>
          </ul>
     {% endfor %}
    

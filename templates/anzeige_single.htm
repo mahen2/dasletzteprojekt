@@ -24,9 +24,50 @@
 		
 		{% for comment in kommentare: %}
 		<div class="comment">
-			<span class="commentator_name">{{comment['name']}}</span>:
+			<span class="comment_date">{{comment['datum']}}</span><br>
+			<span class="commentator_name">
+				{% if comment['url']: %}
+				{{link_url(comment['url']) | safe}}{{comment['url']}}'>{{comment['name']}}:</a>
+				{% else: %}
+				{{comment['name']}}
+				
+				{% endif %}
+			
+			</span>
 			<p>{{comment['text']}}</p>
 		</div>
 		{% endfor %}
+		
+		<hr />
+		<h4><a name="kommentar_schreiben" class="nolink">Kommentar schreiben</a></h4>
+		<form action="" method="post" name="edit" style="margin-left:30px;">
+		    {{form.csrf_token()}}
+			{{form.blogeintragid(value=blogeintragid)}}
+		    <p>
+		      <label>Name:<br>
+		      {{form.name(size=30)}}</label><br>
+		      {% for error in form.errors.name %}
+		      <span style="color: red;">[{{error}}]</span>
+		      {% endfor %}<br>
+		      <label>E-Mail:<br>
+		      {{form.email(size=30)}}</label><br>
+		      {% for error in form.errors.email %}
+		      <span style="color: red;">[{{error}}]</span>
+		      {% endfor %}<br>
+		      <label>URL:<br>
+		      {{form.url(size=30)}}</label><br>
+		      {% for error in form.errors.url %}
+		      <span style="color: red;">[{{error}}]</span>
+		      {% endfor %}<br>
+		      <label>Nachricht:<br>
+		      {{form.text(cols=40, rows=10)}}</label><br>
+		      {% for error in form.errors.text %}
+		      <span style="color: red;">[{{error}}]</span>
+		      {% endfor %}<br>
+		  </p>
+		  <p><input type="submit" value="abschicken" name="submit"></p>
+  
+		</form>
+		
 </p>
 {% endblock %}

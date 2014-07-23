@@ -10,10 +10,10 @@ import hashlib, os, re
 import operator
 from flask_wtf import Form
 from flask.ext.login import LoginManager
-from wtforms import TextField, BooleanField, PasswordField, HiddenField
+from wtforms import TextField, BooleanField, PasswordField, HiddenField, TextAreaField
 from wtforms.validators import Required, EqualTo, Length, ValidationError
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from datetime import timedelta, date
+from datetime import datetime
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'jHgFtjjGFdE5578ijbDDegh'
 app.config['CSRF_ENABLED'] = True
@@ -26,6 +26,15 @@ lm.init_app(app)
 def nl2br(value): 
     return value.replace('\n','<br>\n')
 app.jinja_env.globals.update(nl2br=nl2br)
+
+def link_url(value): 
+    if value.startswith('http://') or value.startswith('https://'):
+        re = "<a href='"
+    else:
+        re = "<a href='http://"
+    return re
+app.jinja_env.globals.update(link_url=link_url)
+
 
 def teile_text_zum_weiterlesen(text):
     text_teile = text.split('[weiterlesen]')
@@ -134,19 +143,18 @@ def is_german_date(form, field):
 
 # EditForm-Klasse zum Bearbeiten und Anlegen von Eintragsdaten
 class EditForm(Form):
-    userid =      TextField('userid')
-    vorname = TextField('vorname', validators = [Required(u"Bitte Feld ausfüllen!")])
     name = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
-    titel = TextField('titel')
-    strasse = TextField('strasse')
-    plz = TextField('plz')
-    ort = TextField('ort')
-    geburtsdatum = TextField('geburtsdatum', validators = [Required(u"Bitte Feld ausfüllen!"), is_german_date])
-    festnetz = TextField('festnetz')
-    mobil = TextField('mobil')
-    email = TextField('email')
-    homepage = TextField('homepage')
-    twitter = TextField('twitter')   
+    email = TextField('email', validators = [Required(u"Bitte Feld ausfüllen!")])
+    url = TextField('url')
+    nachricht = TextField('nachricht', validators = [Required(u"Bitte Feld ausfüllen!")])
+
+class CommentForm(Form):
+    name = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
+    email = TextField('email', validators = [Required(u"Bitte Feld ausfüllen!")])
+    url = TextField('url')
+    text = TextAreaField('text', validators = [Required(u"Bitte Feld ausfüllen!")])
+    blogeintragid = HiddenField('blogeintragid')
+
 
 # Suchfeld-Klasse
 class SearchForm(Form): 
@@ -177,6 +185,20 @@ def hello_world():
     
 @app.route('/artikel/<url_titel>', methods = ['GET', 'POST'])
 def artikel(url_titel):
+    form = CommentForm()
+    
+    if form.validate_on_submit():
+        query = text("INSERT INTO kommentar ('name','email','url','text','datum', 'blogeintragid') VALUES ( :name,:email,:url,:text,:datum,:blogeintragid);")
+        db.engine.execute(query, name=form.name.data, email=form.email.data, url=form.url.data, text=form.text.data, datum=str(datetime.now()), blogeintragid=form.blogeintragid.data)
+        flash("Kommentar wurde angelegt!", 'accept')
+        return redirect('/artikel/'+ url_titel + '#kommentar_schreiben')
+    else:
+        if request.method=='POST':
+            flash("Kommentar nicht gepostet! <a href='#kommentar_schreiben'>Zum Formular</a>",'error')
+       
+   # elif request.method=='POST':
+    #    return redirect('/artikel/'+ url_titel + '#kommentar_schreiben')
+            
     highlight=''
     if request.args.get('highlight'):
         highlight = request.args.get('highlight')
@@ -184,10 +206,13 @@ def artikel(url_titel):
     searchform = SearchForm(csrf_enabled=False)
     entries = Entry.query.filter_by(url_titel=url_titel).with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername)
     
-    k_query = text("SELECT * FROM kommentar WHERE blogeintragid = (SELECT id FROM blogeintrag WHERE url_titel = 'witness_to_a_shelling:_first-hand_account_of_deadly_strike_on_gaza_port'")
+    blogeintragid_res = db.engine.execute(text("SELECT id FROM blogeintrag WHERE url_titel = :url_titel"), url_titel=url_titel)
+    for line in blogeintragid_res:
+        blogeintragid=line['id']
+
     kommentare = db.engine.execute(text("SELECT * FROM kommentar WHERE blogeintragid = (SELECT id FROM blogeintrag WHERE url_titel = :url_titel)"), url_titel=url_titel)
     
-    return render_template('anzeige_single.htm', entries=entries, searchform=searchform, highlight=highlight,kommentare=kommentare)
+    return render_template('anzeige_single.htm', entries=entries, searchform=searchform, highlight=highlight,kommentare=kommentare, form=form, blogeintragid=blogeintragid)
 
 
 
@@ -276,7 +301,7 @@ def edit(id):
 @login_required
 def new():
     searchform = SearchForm(csrf_enabled=False)
-    form = EditForm()
+    form = CommentForm()
     if form.validate_on_submit():
         query = text("INSERT INTO daten ('id','vorname','name','titel','strasse','plz','ort','geburtsdatum','festnetz','mobil','email','homepage','twitter') VALUES (NULL, :vorname,:name,:titel,:strasse,:plz,:ort,:geburtsdatum,:festnetz,:mobil,:email,:homepage,:twitter);")
         db.engine.execute(query, vorname=form.vorname.data, name=form.name.data, titel=form.titel.data, strasse=form.strasse.data, plz=form.plz.data, ort=form.ort.data, geburtsdatum=form.geburtsdatum.data, festnetz=form.festnetz.data, mobil=form.mobil.data, email=form.email.data, homepage=form.homepage.data, twitter=form.twitter.data)
