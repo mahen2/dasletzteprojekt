@@ -2,33 +2,54 @@
 {% extends "index.htm" %}
 
 {% block content %}
+<script>
+window.addEventListener("load", update_url);
+function update_url() {
+	
+	document.getElementById('titel').addEventListener('change', myfunc, false);
+	//function(){document.getElementById('url_titel').value=document.getElementById('titel').value}
+}
 
-<h1>Adressbuch</h1>
+function myfunc() {
+	
+	titelinhalt = document.getElementById('titel').value
+	titelinhalt = titelinhalt.replace(/ /g, "_")
+	titelinhalt = titelinhalt.replace(/ä/g, "ae")
+	titelinhalt = titelinhalt.replace(/ü/g, "ue")
+	titelinhalt = titelinhalt.replace(/ö/g, "oe")
+	titelinhalt = titelinhalt.replace(/ß/g, "ss")
+	document.getElementById('url_titel').value=titelinhalt
+	
+}
+
+</script>
+<h1>Blog</h1>
 
 <h2>Neuer Eintrag</h2>
 <form action="" method="post" name="edit" style="margin-left:30px;">
     {{form.hidden_tag()}}
     <p>
-      <label>Name:<br>
-      {{form.name(size=30)}}</label><br>
-      {% for error in form.errors.name %}
+      <label>Titel:<br>
+      {{form.titel(size=30)}}</label><br>
+      {% for error in form.errors.titel %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>E-Mail:<br>
-      {{form.email(size=30)}}</label><br>
-      {% for error in form.errors.email %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
-      <label>URL:<br>
-      {{form.url(size=30)}}</label><br>
-      {% for error in form.errors.url %}
+      <label>Datum:<br>
+      {{form.datum(size=30)}}</label><br>
+      {% for error in form.errors.datum %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
       <label>Nachricht:<br>
-      {{form.nachricht(cols=40, rows=10)}}</label><br>
-      {% for error in form.errors.nachricht %}
+      {{form.text(cols=40, rows=10)}}</label><br>
+      {% for error in form.errors.text %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
+      <label>URL-Titel:<br>
+      {{form.url_titel(size=30)}}</label><br>
+      {% for error in form.errors.url_titel %}
+      <span style="color: red;">[{{error}}]</span>
+      {% endfor %}<br>
+	  
   </p>
   <p><input type="submit" value="abschicken"></p>
   

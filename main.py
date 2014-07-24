@@ -154,6 +154,12 @@ class CommentForm(Form):
     url = TextField('url')
     text = TextAreaField('text', validators = [Required(u"Bitte Feld ausfüllen!")])
     blogeintragid = HiddenField('blogeintragid')
+    
+class BlogentryForm(Form):
+    titel = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
+    text = TextAreaField('text', validators = [Required(u"Bitte Feld ausfüllen!")])
+    url_titel = TextField('url_titel')
+    datum = TextField('datum')
 
 
 # Suchfeld-Klasse
@@ -301,12 +307,12 @@ def edit(id):
 @login_required
 def new():
     searchform = SearchForm(csrf_enabled=False)
-    form = CommentForm()
+    form = BlogentryForm()
     if form.validate_on_submit():
-        query = text("INSERT INTO daten ('id','vorname','name','titel','strasse','plz','ort','geburtsdatum','festnetz','mobil','email','homepage','twitter') VALUES (NULL, :vorname,:name,:titel,:strasse,:plz,:ort,:geburtsdatum,:festnetz,:mobil,:email,:homepage,:twitter);")
-        db.engine.execute(query, vorname=form.vorname.data, name=form.name.data, titel=form.titel.data, strasse=form.strasse.data, plz=form.plz.data, ort=form.ort.data, geburtsdatum=form.geburtsdatum.data, festnetz=form.festnetz.data, mobil=form.mobil.data, email=form.email.data, homepage=form.homepage.data, twitter=form.twitter.data)
+        query = text("INSERT INTO blogeintrag ('titel', 'url_titel', 'datum', 'text', 'geschriebenvonbenutzername') VALUES (:titel, :url_titel, :datum, :text, :geschriebenvonbenutzername);")
+        db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, geschriebenvonbenutzername=session['username'])
         flash("Eintrag wurde angelegt!", 'accept')
-        return redirect('/edit')
+        return redirect('/new')
     else:
         return render_template('new.htm', form=form, searchform=searchform)
     
