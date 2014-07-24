@@ -15,7 +15,7 @@
          <!-- schaue nach ob eine Session besteht, falls ja, zeige andere Links an als für nicht eingeloggte Benutzer -->
     <div>Blog: <a href="/">Start</a>
 		
-		 {% if session['username'] %} &mdash; <a href="/profile">Mein Profil</a> &mdash; <a href="/logout">Ausloggen</a>{% else %}  &mdash; <a href="/login">Login</a>  {% endif %} <div style="display:inline;float:right;"><form class='searchform' name='search' method='get' action='/search'>{{searchform.searchfield(size=10, placeholder='suchen ...')}}</form> </div>
+		 {% if session['username'] %} &mdash; <a href="/profile">Mein Profil</a> &mdash; <a href="/new">Neuen Blogeintrag schreiben</a> &mdash; <a href="/logout">Ausloggen</a>{% else %}  &mdash; <a href="/login">Login</a>  {% endif %} <div style="display:inline;float:right;"><form class='searchform' name='search' method='get' action='/search'>{{searchform.searchfield(size=10, placeholder='suchen ...')}}</form> </div>
     <hr style='margin-top:20px;'>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}

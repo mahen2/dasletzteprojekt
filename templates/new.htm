@@ -18,6 +18,7 @@ function myfunc() {
 	titelinhalt = titelinhalt.replace(/ü/g, "ue")
 	titelinhalt = titelinhalt.replace(/ö/g, "oe")
 	titelinhalt = titelinhalt.replace(/ß/g, "ss")
+	titelinhalt = titelinhalt.toLowerCase()
 	document.getElementById('url_titel').value=titelinhalt
 	
 }
