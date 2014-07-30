@@ -42,69 +42,27 @@
 <form action="" method="post" name="edit" style="margin-left:30px;">
     {{form.hidden_tag()}}
     <p>
-      <label>Vorname:<br>
-      {{form.vorname(size=30,value=entries['vorname'])}}</label><br>
-      {% for error in form.errors.vorname %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
-      <label>Name:<br>
-      {{form.name(size=30,value=entries['name'])}}</label><br>
-      {% for error in form.errors.name %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
       <label>Titel:<br>
-      {{form.titel(size=30,value=entries['titel'])}}</label><br>
+      {{form.titel(size=30, value=entries['titel'])}}</label><br>
       {% for error in form.errors.titel %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>Straße:<br>
-      {{form.strasse(size=30,value=entries['strasse'])}}</label><br>
-      {% for error in form.errors.strasse %}
+      <label>Datum:<br>
+      {{form.datum(size=30, value=entries['datum'])}}</label><br>
+      {% for error in form.errors.datum %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>PLZ:<br>
-      {{form.plz(size=30,value=entries['plz'])}}</label><br>
-      {% for error in form.errors.plz %}
+      <label>Nachricht:<br>
+      {{form.text(cols=40, rows=10)}}</label><br>
+      {% for error in form.errors.text %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>Ort:<br>
-      {{form.ort(size=30,value=entries['ort'])}}</label><br>
-      {% for error in form.errors.ort %}
+      <label>URL-Titel:<br>
+      {{form.url_titel(size=30, value=entries['url_titel'])}}</label><br>
+      {% for error in form.errors.url_titel %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>Geburtsdatum:<br>
-      {{form.geburtsdatum(size=30,placeholder='Format: 02.07.1990',value=entries['geburtsdatum'])}}</label><br>
-      {% for error in form.errors.geburtsdatum %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
-      <label>Festnetz:<br>
-      {{form.festnetz(size=30,value=entries['festnetz'])}}</label><br>
-      {% for error in form.errors.festnetz %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
-      <label>Mobil:<br>
-      {{form.mobil(size=30,value=entries['mobil'])}}</label><br>
-      {% for error in form.errors.mobil %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
-      <label>E-Mail:<br>
-      {{form.email(size=30,value=entries['email'])}}</label><br>
-      {% for error in form.errors.email %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
-      <label>Homepage:<br>
-      {{form.homepage(size=30,value=entries['homepage'])}}</label><br>
-      {% for error in form.errors.homepage %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
-      <label>Twitter:<br>
-      {{form.twitter(size=30,value=entries['twitter'])}}</label><br>
-      {% for error in form.errors.twitter %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
-      <div style="display:none;"> <!-- display block wenn user-id doch angezeigt werden soll -->
-      <br><small>User-ID</small><br>{{form.userid(size=3,value=entries['id'])}}
-      </div>
+	  
   </p>
   <p><input type="submit" value="abschicken"></p>
   

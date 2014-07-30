@@ -143,10 +143,10 @@ def is_german_date(form, field):
 
 # EditForm-Klasse zum Bearbeiten und Anlegen von Eintragsdaten
 class EditForm(Form):
-    name = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
-    email = TextField('email', validators = [Required(u"Bitte Feld ausfüllen!")])
-    url = TextField('url')
-    nachricht = TextField('nachricht', validators = [Required(u"Bitte Feld ausfüllen!")])
+    titel = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
+    text = TextAreaField('text', validators = [Required(u"Bitte Feld ausfüllen!")])
+    url_titel = TextField('url_titel')
+    datum = TextField('datum')
 
 class CommentForm(Form):
     name = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
@@ -286,19 +286,24 @@ def search():
 @app.route('/edit/<id>', methods = ['GET', 'POST'])
 @login_required
 def edit(id):
-    form = EditForm()
+    form = BlogentryForm()
     searchform = SearchForm(csrf_enabled=False)
-    entries = Entry.query.with_entities(Entry.id, Entry.vorname,Entry.name,Entry.titel,Entry.strasse,Entry.plz,Entry.ort, Entry.geburtsdatum, Entry.festnetz, Entry.mobil, Entry.email, Entry.homepage,Entry.twitter).order_by(desc(Entry.id))
+    entries = Entry.query.filter_by(geschriebenvonbenutzername=session['username']).with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).order_by(desc(Entry.id))
+    te = Entry.query.filter_by(id=id).with_entities(Entry.text).first()
     # wenn id gegeben ist, zeige nicht alle Einträge, sondern einen zum bearbeiten
     if id is not None:
+        if not form.validate_on_submit():
+            form.text.data=te[0]
+        
         if form.validate_on_submit():
             # text()-Funktion escapet den string
-            query = text("UPDATE daten SET vorname=:vorname, name=:name, titel=:titel,strasse=:strasse, plz=:plz, ort=:ort, geburtsdatum=:geburtsdatum, festnetz=:festnetz, mobil=:mobil, email=:email, homepage=:homepage, twitter=:twitter where id=:userid ;")
+            print form.text.data
+            query = text("UPDATE blogeintrag SET id=:id, titel=:titel, text=:text, url_titel=:url_titel, datum=:datum, geschriebenvonbenutzername=:geschriebenvonbenutzername where id=:id ;")
             flash("Eintrag bearbeitet!", 'accept')
             # Daten ändern
-            db.engine.execute(query, vorname=form.vorname.data, name=form.name.data, titel=form.titel.data, strasse=form.strasse.data, plz=form.plz.data, ort=form.ort.data, geburtsdatum=form.geburtsdatum.data, festnetz=form.festnetz.data, mobil=form.mobil.data, email=form.email.data, homepage=form.homepage.data, twitter=form.twitter.data, userid=form.userid.data)
+            db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, geschriebenvonbenutzername=session['username'], id=id)
             
-        entries = Entry.query.filter_by(id=id).with_entities(Entry.id, Entry.vorname,Entry.name,Entry.titel,Entry.strasse,Entry.plz,Entry.ort, Entry.geburtsdatum, Entry.festnetz, Entry.mobil, Entry.email, Entry.homepage,Entry.twitter).first()
+        entries = Entry.query.filter_by(id=id).with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).first()
     return render_template('edit.htm', entries=entries, id=id , form=form, searchform=searchform)  
 
 
@@ -322,9 +327,9 @@ def new():
 @login_required
 def delete(id):
     if id is not None:
-        query = text("DELETE FROM daten WHERE id = :id;")
+        query = text("DELETE FROM blogeintrag WHERE id = :id;")
         db.engine.execute(query, id=id)
-        flash(u"Benutzer mit der ID " + str(id) + u" gelöscht!", 'accept')
+        flash(u"Eintrag mit der ID " + str(id) + u" gelöscht!", 'accept')
         return redirect('/edit')
 
 # Einloggen
