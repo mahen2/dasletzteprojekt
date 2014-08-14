@@ -1,7 +1,7 @@
 # −*−coding:utf−8−*−   
 # Autor: Mina Habsaoui, Maria Henkel, Fabian Pegel
 # Mai 2014
-# Projektseminar Angewandte Informationswissenschaft   
+# Projektseminar Angewandte Informationswissenschaft   # 25 jähriger geist eines 6 jährigen walkie talkie autounfall tot betrunken
 # Codeteile übernommen vom "Mega-Flask-Tutorial" http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world                   
 from flask import Flask, render_template, g, flash, redirect, session, request
 from flask_sqlalchemy import SQLAlchemy
@@ -14,6 +14,7 @@ from wtforms import TextField, BooleanField, PasswordField, HiddenField, TextAre
 from wtforms.validators import Required, EqualTo, Length, ValidationError
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from datetime import datetime
+from time import time
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'jHgFtjjGFdE5578ijbDDegh'
 app.config['CSRF_ENABLED'] = True
@@ -182,11 +183,26 @@ class ChangePassForm(Form):
 
 
 # Startseite
-@app.route('/')
-def hello_world(): 
+@app.route('/seite/<seite_von>')
+@app.route('/', defaults={'seite_von': 0})
+def hello_world(seite_von):
+    eintraege_auf_seite = 5
+    seite_von = int(seite_von)
+    seite_von = seite_von * eintraege_auf_seite
+    seite_bis = seite_von + eintraege_auf_seite
+    
+    print seite_von
+    print seite_bis
     searchform = SearchForm(csrf_enabled=False)
-    entries=Entry.query.with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername) 
-    return render_template('anzeige.htm', entries=entries, searchform=searchform)   
+    entries=Entry.query.with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).slice(seite_von,seite_bis)
+    number_of_results = db.engine.execute(text("SELECT count(id) as anzahl from blogeintrag"))
+    for line in number_of_results:
+        anzahl = line['anzahl']
+    if anzahl>eintraege_auf_seite:    
+        seiten = (anzahl/eintraege_auf_seite) + (anzahl%eintraege_auf_seite)
+    else:
+        seiten = 1
+    return render_template('anzeige.htm', entries=entries, searchform=searchform, anzahl=anzahl, seiten=seiten, seite_von=seite_von, eintraege_auf_seite=eintraege_auf_seite)   
 	
     
 @app.route('/artikel/<url_titel>', methods = ['GET', 'POST'])
@@ -296,6 +312,11 @@ def edit(id):
             form.text.data=te[0]
         
         if form.validate_on_submit():
+            liste_urls = db.engine.execute(text("SELECT url_titel FROM blogeintrag WHERE url_titel = :url_titel"), url_titel=form.url_titel.data)
+            for line in liste_urls:
+                if form.url_titel.data == line['url_titel']:
+                    form.url_titel.data = form.url_titel.data+"_"+str(time())
+            
             # text()-Funktion escapet den string
             print form.text.data
             query = text("UPDATE blogeintrag SET id=:id, titel=:titel, text=:text, url_titel=:url_titel, datum=:datum, geschriebenvonbenutzername=:geschriebenvonbenutzername where id=:id ;")
@@ -314,6 +335,11 @@ def new():
     searchform = SearchForm(csrf_enabled=False)
     form = BlogentryForm()
     if form.validate_on_submit():
+        liste_urls = db.engine.execute(text("SELECT url_titel FROM blogeintrag WHERE url_titel = :url_titel"), url_titel=form.url_titel.data)
+        for line in liste_urls:
+            if form.url_titel.data == line['url_titel']:
+                form.url_titel.data = form.url_titel.data+"_"+str(time())
+        
         query = text("INSERT INTO blogeintrag ('titel', 'url_titel', 'datum', 'text', 'geschriebenvonbenutzername') VALUES (:titel, :url_titel, :datum, :text, :geschriebenvonbenutzername);")
         db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, geschriebenvonbenutzername=session['username'])
         flash("Eintrag wurde angelegt!", 'accept')

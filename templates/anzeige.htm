@@ -25,6 +25,21 @@
 			
 		{% endfor %}
 <p>
+	Seiten:
+	{% for i in range(1,seiten+1): %}
+		{% if i>1: %}
+			&mdash;
+		{% endif %}
+		{% if seite_von/eintraege_auf_seite==i-1: %}
+			{{i}}
+		{% else: %}
+			{% if i==1: %}
+				<a href="/">{{i}}</a> 
+			{% else: %}
+				<a href="/seite/{{i-1}}">{{i}}</a> 
+			{% endif %}
+		{% endif %}
 	
+	{% endfor %}
 </p>
 {% endblock %}

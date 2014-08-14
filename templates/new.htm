@@ -12,8 +12,11 @@ function update_url() {
 
 function myfunc() {
 	
-	titelinhalt = document.getElementById('titel').value
+	titelinhalt = document.getElementById('titel').value.trim()
 	titelinhalt = titelinhalt.replace(/ /g, "_")
+	titelinhalt = titelinhalt.replace(/#/g, "_")
+	titelinhalt = titelinhalt.replace(/\?/g, "_")
+	titelinhalt = titelinhalt.replace(/&/g, "_")
 	titelinhalt = titelinhalt.replace(/ä/g, "ae")
 	titelinhalt = titelinhalt.replace(/ü/g, "ue")
 	titelinhalt = titelinhalt.replace(/ö/g, "oe")
