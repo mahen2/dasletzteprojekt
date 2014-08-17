@@ -8,6 +8,7 @@ Fabian:
 * Bootstrap
 * Registrierung
 * Passwörter-Salt
+* Datum schön formatieren
 
 Maria:
 ------
