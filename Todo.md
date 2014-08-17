@@ -9,6 +9,7 @@ Fabian:
 * Registrierung
 * Passwörter-Salt
 * Datum schön formatieren
+* Profil bearbeiten
 
 Maria:
 ------
