@@ -211,7 +211,9 @@ def hello_world(seite_von):
     for line in number_of_results:
         anzahl = line['anzahl']
     if anzahl>eintraege_auf_seite:    
-        seiten = (anzahl/eintraege_auf_seite) + (anzahl%eintraege_auf_seite)
+        seiten = (anzahl/eintraege_auf_seite)
+        if anzahl%eintraege_auf_seite!=0:
+            seiten = seiten+1
     else:
         seiten = 1
     return render_template('anzeige.htm', entries=entries, searchform=searchform, anzahl=anzahl, seiten=seiten, seite_von=seite_von, eintraege_auf_seite=eintraege_auf_seite)   
