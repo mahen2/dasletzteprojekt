@@ -3,10 +3,10 @@
 
 {% block content %}
 
-<h1>Adressbuch</h1>
+<h1>Blog</h1>
 
-<h2>Suche</h2>
-Der Begriff <strong><em>{{begriff}}</em></strong> kommt in folgenden Artikeln vor:<br><br>
+<h2>{{ _('Suche') }}</h2>
+{{ _('Der Begriff') }} <strong><em>{{begriff}}</em></strong> {{ _('kommt in folgenden Artikeln vor:') }}<br><br>
 
 
 <ul>
@@ -16,7 +16,7 @@ Der Begriff <strong><em>{{begriff}}</em></strong> kommt in folgenden Artikeln vo
 		{% endfor %}
 		{% for row in number_of_results: %}
 		{% if row['anzahl']==0: %}	
-				<li><strong>Keine Einträge gefunden!</strong></li>
+				<li><strong>{{ _('Keine Einträge gefunden!') }}</strong></li>
 		{% endif %}
 		{% endfor %}
 		

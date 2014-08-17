@@ -6,10 +6,10 @@
 <h1>Blog</h1>
 
     <ul class="add">
-    <a href="/new"><li><strong style="color:blue;vertical-align:top;">neuen Eintrag anlegen</strong></li></a>
+    <a href="/new"><li><strong style="color:blue;vertical-align:top;">{{ _('neuen Eintrag anlegen') }}</strong></li></a>
     </ul>
 
-<h2>Einträge bearbeiten</h2>
+<h2>{{ _('Einträge bearbeiten') }}</h2>
 
 {% if not id: %}
 
@@ -37,34 +37,34 @@
 
 {% else: %}
 <p><ul class="delete">
-    <a href="/delete/{{entries['id']}}" onclick="if(!confirm('Möchtest du den Eintrag wirklich löschen?')){return false;}"><li><strong style="color:red; vertical-align:top;">Eintrag löschen</strong></li></a>
+    <a href="/delete/{{entries['id']}}" onclick="if(!confirm({{ _("'Möchtest du den Eintrag wirklich löschen?'") }})){return false;}"><li><strong style="color:red; vertical-align:top;">{{ _('Eintrag löschen') }}</strong></li></a>
 </ul></p>
 <form action="" method="post" name="edit" style="margin-left:30px;">
     {{form.hidden_tag()}}
     <p>
-      <label>Titel:<br>
+      <label>{{ _('Titel:') }}<br>
       {{form.titel(size=30, value=entries['titel'])}}</label><br>
       {% for error in form.errors.titel %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>Datum:<br>
+      <label>{{ _('Datum:') }}<br>
       {{form.datum(size=30, value=entries['datum'])}}</label><br>
       {% for error in form.errors.datum %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>Nachricht:<br>
+      <label>{{ _('Nachricht:') }}<br>
       {{form.text(cols=40, rows=10)}}</label><br>
       {% for error in form.errors.text %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>URL-Titel:<br>
+      <label>{{ _('URL-Titel:') }}<br>
       {{form.url_titel(size=30, value=entries['url_titel'])}}</label><br>
       {% for error in form.errors.url_titel %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
 	  
   </p>
-  <p><input type="submit" value="abschicken"></p>
+  <p><input type="submit" value="{{ _('abschicken') }}"></p>
   
 </form>
 

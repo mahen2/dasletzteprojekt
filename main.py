@@ -8,21 +8,32 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text, desc
 import hashlib, os, re
 import operator
-from flask_wtf import Form
+from flask_wtf import Form 
 from flask.ext.login import LoginManager
 from wtforms import TextField, BooleanField, PasswordField, HiddenField, TextAreaField
 from wtforms.validators import Required, EqualTo, Length, ValidationError
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from datetime import datetime
 from time import time
+from flask.ext.babel import Babel
+from flask.ext.babel import gettext
+_ = gettext
+LANGUAGES = {
+    'en': 'English',
+    'de': 'Deutsch'
+}
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'jHgFtjjGFdE5578ijbDDegh'
 app.config['CSRF_ENABLED'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.sqlite'
 db = SQLAlchemy(app)
+babel = Babel(app)
 lm = LoginManager()
 lm.init_app(app)
 
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(LANGUAGES.keys())
 
 def nl2br(value): 
     return value.replace('\n','<br>\n')
@@ -130,55 +141,56 @@ def is_german_date(form, field):
     datearray = field.data.split('.')
     if len(datearray) == 3:
         if len(datearray[0])!=2 or int(datearray[0])>31:
-             raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+             raise ValidationError(_('Geburtsdatum entspricht nicht dem vorgegebenem Format!'))
         if len(datearray[1])!=2 or int(datearray[1])>12:
-            raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+            raise ValidationError(_('Geburtsdatum entspricht nicht dem vorgegebenem Format!'))
         if len(datearray[2])!=4:
-            raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+            raise ValidationError(_('Geburtsdatum entspricht nicht dem vorgegebenem Format!'))
         for element in datearray:
             if element.isdigit() == False:
-                raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+                raise ValidationError(_('Geburtsdatum entspricht nicht dem vorgegebenem Format!'))
     else: 
-        raise ValidationError('Geburtsdatum entspricht nicht dem vorgegebenem Format!')
+        raise ValidationError(_('Geburtsdatum entspricht nicht dem vorgegebenem Format!'))
 
 
 # EditForm-Klasse zum Bearbeiten und Anlegen von Eintragsdaten
 class EditForm(Form):
-    titel = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
-    text = TextAreaField('text', validators = [Required(u"Bitte Feld ausfüllen!")])
+    titel = TextField('name', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
+    text = TextAreaField('text', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
     url_titel = TextField('url_titel')
     datum = TextField('datum')
 
 class CommentForm(Form):
-    name = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
-    email = TextField('email', validators = [Required(u"Bitte Feld ausfüllen!")])
+    name = TextField('name', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
+    email = TextField('email', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
     url = TextField('url')
-    text = TextAreaField('text', validators = [Required(u"Bitte Feld ausfüllen!")])
+    text = TextAreaField('text', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
     blogeintragid = HiddenField('blogeintragid')
     
 class BlogentryForm(Form):
-    titel = TextField('name', validators = [Required(u"Bitte Feld ausfüllen!")])
-    text = TextAreaField('text', validators = [Required(u"Bitte Feld ausfüllen!")])
+    titel = TextField('name', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
+    text = TextAreaField('text', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
     url_titel = TextField('url_titel')
     datum = TextField('datum')
 
 
 # Suchfeld-Klasse
 class SearchForm(Form): 
-    searchfield = TextField('searchfield', validators = [Required(u"Bitte Feld ausfüllen!")])
+    searchfield = TextField('searchfield', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
 
 
 # Login-Formular-Klasse
 class LoginForm(Form):
-    username = TextField('username', validators = [Required("Bitte einen Benutzernamen eingeben!")])
-    password = PasswordField('password', validators = [Required("Bitte ein Passwort eingeben!")]) 
+    enteruser = gettext('Bitte einen Benutzernamen eingeben!')
+    username = TextField('username', validators = [Required(enteruser)])
+    password = PasswordField('password', validators = [Required(_("Bitte ein Passwort eingeben!"))]) 
     remember_me = BooleanField('remember_me', default = False)
 
 # Passwort-Formular-Klasse
 class ChangePassForm(Form):
-    password_old = PasswordField('password_old', validators = [Required("Bitte altes Passwort eingeben!")])
-    password1    = PasswordField('password1', validators = [Required("Bitte ein neues Passwort eingeben!"), Length(min=8, message=u"Passwort muss mindestens 8 Zeichen lang sein!")]) 
-    password2    = PasswordField('password2', validators = [Required("Bitte ein neues Passwort eingeben!"), EqualTo('password1', message=u'Passwörter müssen übereinstimmen!')]) 
+    password_old = PasswordField('password_old', validators = [Required(_("Bitte altes Passwort eingeben!"))])
+    password1    = PasswordField('password1', validators = [Required(_("Bitte ein neues Passwort eingeben!")), Length(min=8, message=u"Passwort muss mindestens 8 Zeichen lang sein!")]) 
+    password2    = PasswordField('password2', validators = [Required(_("Bitte ein neues Passwort eingeben!")), EqualTo('password1', message=u'Passwörter müssen übereinstimmen!')]) 
 
 
 
@@ -212,11 +224,11 @@ def artikel(url_titel):
     if form.validate_on_submit():
         query = text("INSERT INTO kommentar ('name','email','url','text','datum', 'blogeintragid') VALUES ( :name,:email,:url,:text,:datum,:blogeintragid);")
         db.engine.execute(query, name=form.name.data, email=form.email.data, url=form.url.data, text=form.text.data, datum=str(datetime.now()), blogeintragid=form.blogeintragid.data)
-        flash("Kommentar wurde angelegt!", 'accept')
+        flash(_("Kommentar wurde angelegt!"), 'accept')
         return redirect('/artikel/'+ url_titel + '#kommentar_schreiben')
     else:
         if request.method=='POST':
-            flash("Kommentar nicht gepostet! <a href='#kommentar_schreiben'>Zum Formular</a>",'error')
+            flash(_("Kommentar nicht gepostet! <a href='#kommentar_schreiben'>Zum Formular</a>"),'error')
        
    # elif request.method=='POST':
     #    return redirect('/artikel/'+ url_titel + '#kommentar_schreiben')
@@ -251,9 +263,9 @@ def profile():
             # neues Passwort hashen und in die DB eintragen, text()-Funktion gegegn SQL-Injections
             query = text("UPDATE benutzer SET passwort=:passwort WHERE username=:username")
             db.engine.execute(query, username=session['username'], passwort=neues_pw)
-            flash(u"Passwörter geändert!", 'accept')
+            flash(_(u"Passwörter geändert!"), 'accept')
         else:
-            flash("Altes Passwort ist falsch!",'error')
+            flash(_("Altes Passwort ist falsch!"),'error')
         
     return render_template('profile.htm', searchform=searchform, passwordform=passwordform)   
 
@@ -320,7 +332,7 @@ def edit(id):
             # text()-Funktion escapet den string
             print form.text.data
             query = text("UPDATE blogeintrag SET id=:id, titel=:titel, text=:text, url_titel=:url_titel, datum=:datum, geschriebenvonbenutzername=:geschriebenvonbenutzername where id=:id ;")
-            flash("Eintrag bearbeitet!", 'accept')
+            flash(_("Eintrag bearbeitet!"), 'accept')
             # Daten ändern
             db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, geschriebenvonbenutzername=session['username'], id=id)
             
@@ -342,7 +354,7 @@ def new():
         
         query = text("INSERT INTO blogeintrag ('titel', 'url_titel', 'datum', 'text', 'geschriebenvonbenutzername') VALUES (:titel, :url_titel, :datum, :text, :geschriebenvonbenutzername);")
         db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, geschriebenvonbenutzername=session['username'])
-        flash("Eintrag wurde angelegt!", 'accept')
+        flash(_("Eintrag wurde angelegt!"), 'accept')
         return redirect('/new')
     else:
         return render_template('new.htm', form=form, searchform=searchform)
@@ -355,7 +367,7 @@ def delete(id):
     if id is not None:
         query = text("DELETE FROM blogeintrag WHERE id = :id;")
         db.engine.execute(query, id=id)
-        flash(u"Eintrag mit der ID " + str(id) + u" gelöscht!", 'accept')
+        flash(_(u"Eintrag mit der ID ") + str(id) + _(u" gelöscht!"), 'accept')
         return redirect('/edit')
 
 # Einloggen
@@ -376,10 +388,10 @@ def login():
         if user is not None and user.passwort == hashlib.md5(p_password).hexdigest():
             session['username']=user.username
             login_user(user, remember = remember_me)
-            flash('Herzlich Willkommen, '+session['username']+'!', 'accept')
+            flash(_('Herzlich Willkommen, ')+session['username']+'!', 'accept')
             return redirect('/')
         else:
-            flash('Benutzername oder Passwort falsch!', 'error')
+            flash(_('Benutzername oder Passwort falsch!'), 'error')
 
     return render_template('login.htm', 
         title = 'Sign In',
@@ -391,7 +403,7 @@ def logout():
     if session['username']:
         session.pop('username', None)
     logout_user()
-    flash('Du wurdest erfolgreich ausgeloggt!','accept')
+    flash(_('Du wurdest erfolgreich ausgeloggt!'),'accept')
     return redirect('/login')
 
         

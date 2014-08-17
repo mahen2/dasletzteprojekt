@@ -29,33 +29,33 @@ function myfunc() {
 </script>
 <h1>Blog</h1>
 
-<h2>Neuer Eintrag</h2>
+<h2>{{ _('Neuer Eintrag') }}</h2>
 <form action="" method="post" name="edit" style="margin-left:30px;">
     {{form.hidden_tag()}}
     <p>
-      <label>Titel:<br>
+      <label>{{ _('Titel:') }}<br>
       {{form.titel(size=30)}}</label><br>
       {% for error in form.errors.titel %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>Datum:<br>
+      <label>{{ _('Datum:') }}<br>
       {{form.datum(size=30)}}</label><br>
       {% for error in form.errors.datum %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>Nachricht:<br>
+      <label>{{ _('Nachricht:') }}<br>
       {{form.text(cols=40, rows=10)}}</label><br>
       {% for error in form.errors.text %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>URL-Titel:<br>
+      <label>{{ _('URL-Titel:') }}<br>
       {{form.url_titel(size=30)}}</label><br>
       {% for error in form.errors.url_titel %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
 	  
   </p>
-  <p><input type="submit" value="abschicken"></p>
+  <p><input type="submit" value="{{ _('abschicken') }}"></p>
   
 </form>
 
