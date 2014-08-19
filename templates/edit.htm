@@ -3,13 +3,12 @@
 
 {% block content %}
 
-<h1>Blog</h1>
 
     <ul class="add">
     <a href="/new"><li><strong style="color:blue;vertical-align:top;">{{ _('neuen Eintrag anlegen') }}</strong></li></a>
     </ul>
 
-<h2>{{ _('Einträge bearbeiten') }}</h2>
+<h1 class="page-header">{{ _('Einträge bearbeiten') }}</h1>
 
 {% if not id: %}
 

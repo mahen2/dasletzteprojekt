@@ -3,18 +3,20 @@
 
 {% block content %}
 
-<h1>Blog</h1>
-
+                <h1 class="page-header">
+                    Blog
+                    <small>{{title}}</small>
+                </h1>
 
 	
 		{% for line in entries: %}
 			
 			<h2><a href="/artikel/{{line['url_titel']}}">{{nl2br(line['titel']) | safe}}</a></h2>
-			<small>
+			<p><small>
 				{{ _('geschrieben von:') }} {{line['geschriebenvonbenutzername']}}<br>
 				{{ _('Datum:') }} {{line['datum']}}
-			</small>
-			<p>{{entferne_weiterlesen_marker(nl2br(highlight_word(line['text'], highlight))) | safe}}</p>
+			</small></p>
+			<p style="text-align:justify;">{{entferne_weiterlesen_marker(nl2br(highlight_word(line['text'], highlight))) | safe}}</p>
 			<hr />
 			
 			
@@ -23,13 +25,13 @@
 	<h3>{{ _('Kommentare') }}</h3>
 		
 		{% for comment in kommentare: %}
-		<div class="comment">
-			<span class="comment_date">{{comment['datum']}}</span><br>
+	<a name="{{comment['id']}}"></a><div class="comment">
+			<span class="comment_date"><a href="#{{comment['id']}}">{{comment['datum']}}</a></span><br>
 			<span class="commentator_name">
 				{% if comment['url']: %}
 				{{link_url(comment['url']) | safe}}{{comment['url']}}'>{{comment['name']}}:</a>
 				{% else: %}
-				{{comment['name']}}
+				{{comment['name']}}:
 				
 				{% endif %}
 			

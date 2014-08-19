@@ -137,7 +137,7 @@ class Entry(db.Model):
       
 
 
-
+'''
 # Datums-Format checken bei Formularen 
 def is_german_date(form, field):
     datearray = field.data.split('.')
@@ -153,7 +153,7 @@ def is_german_date(form, field):
                 raise ValidationError(_('Geburtsdatum entspricht nicht dem vorgegebenem Format!'))
     else: 
         raise ValidationError(_('Geburtsdatum entspricht nicht dem vorgegebenem Format!'))
-
+'''
 
 # EditForm-Klasse zum Bearbeiten und Anlegen von Eintragsdaten
 class EditForm(Form):
@@ -231,7 +231,7 @@ def hello_world(seite_von):
             seiten = seiten+1
     else:
         seiten = 1
-    return render_template('anzeige.htm', entries=entries, searchform=searchform, anzahl=anzahl, seiten=seiten, seite_von=seite_von, eintraege_auf_seite=eintraege_auf_seite)   
+    return render_template('anzeige.htm', entries=entries, searchform=searchform, anzahl=anzahl, seiten=seiten, seite_von=seite_von, eintraege_auf_seite=eintraege_auf_seite, isactive='blog')   
 	
     
 @app.route('/artikel/<url_titel>', methods = ['GET', 'POST'])
@@ -242,13 +242,11 @@ def artikel(url_titel):
         query = text("INSERT INTO kommentar ('name','email','url','text','datum', 'blogeintragid') VALUES ( :name,:email,:url,:text,:datum,:blogeintragid);")
         db.engine.execute(query, name=form.name.data, email=form.email.data, url=form.url.data, text=form.text.data, datum=str(datetime.now().strftime('%d.%m.%Y - %H:%M Uhr')), blogeintragid=form.blogeintragid.data)
         flash(_("Kommentar wurde angelegt!"), 'accept')
-        return redirect('/artikel/'+ url_titel + '#kommentar_schreiben')
+        return redirect('/artikel/'+ url_titel)
     else:
         if request.method=='POST':
             flash(_("Kommentar nicht gepostet! <a href='#kommentar_schreiben'>Zum Formular</a>"),'error')
        
-   # elif request.method=='POST':
-    #    return redirect('/artikel/'+ url_titel + '#kommentar_schreiben')
             
     highlight=''
     if request.args.get('highlight'):
@@ -263,7 +261,7 @@ def artikel(url_titel):
 
     kommentare = db.engine.execute(text("SELECT * FROM kommentar WHERE blogeintragid = (SELECT id FROM blogeintrag WHERE url_titel = :url_titel)"), url_titel=url_titel)
     
-    return render_template('anzeige_single.htm', entries=entries, searchform=searchform, highlight=highlight,kommentare=kommentare, form=form, blogeintragid=blogeintragid)
+    return render_template('anzeige_single.htm', entries=entries, searchform=searchform, highlight=highlight,kommentare=kommentare, form=form, blogeintragid=blogeintragid, isactive='blog')
 
 
 # Profilseite, bisher zum Passwort ändern
@@ -285,7 +283,7 @@ def register():
         db.engine.execute(query, username=registerform.username.data, passwort=hashlib.md5(registerform.password1.data+salt).hexdigest(), vorname=registerform.vorname.data, nachname=registerform.nachname.data, salt=salt)
         
         flash(_("Benutzer wurde registriert!"),'accept')
-    return render_template('register.htm', searchform=searchform, registerform=registerform)   
+    return render_template('register.htm', searchform=searchform, registerform=registerform, isactive='register')   
 
 
 
@@ -308,7 +306,7 @@ def password():
         else:
             flash(_("Altes Passwort ist falsch!"),'error')
         
-    return render_template('password.htm', searchform=searchform, passwordform=passwordform)   
+    return render_template('password.htm', searchform=searchform, passwordform=passwordform, isactive='profile')   
     
 @app.route('/profile', methods = ['GET', 'POST'])
 @login_required
@@ -323,7 +321,7 @@ def profile():
     userdata = User.query.filter_by(username=session['username']).with_entities(User.vorname,User.nachname).first()
    
         
-    return render_template('profile.htm', searchform=searchform, profileform=profileform, userdata=userdata)   
+    return render_template('profile.htm', searchform=searchform, profileform=profileform, userdata=userdata, isactive='profile')   
 
 
 
@@ -394,7 +392,7 @@ def edit(id):
             db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, geschriebenvonbenutzername=session['username'], id=id)
             
         entries = Entry.query.filter_by(id=id).with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).first()
-    return render_template('edit.htm', entries=entries, id=id , form=form, searchform=searchform)  
+    return render_template('edit.htm', entries=entries, id=id , form=form, searchform=searchform, isactive='edit')  
 
 
 # Neuen Eintrag anlegen
@@ -414,7 +412,7 @@ def new():
         flash(_("Eintrag wurde angelegt!"), 'accept')
         return redirect('/new')
     else:
-        return render_template('new.htm', form=form, searchform=searchform, zeit=str(datetime.now().strftime('%d.%m.%Y')))
+        return render_template('new.htm', form=form, searchform=searchform, zeit=str(datetime.now().strftime('%d.%m.%Y')), isactive='new')
     
     
 # Eintrag löschen
@@ -451,8 +449,7 @@ def login():
             flash(_('Benutzername oder Passwort falsch!'), 'error')
 
     return render_template('login.htm', 
-        title = 'Sign In',
-        form = form, searchform=searchform)
+        form = form, searchform=searchform, isactive='login')
 
 # Ausloggen
 @app.route('/logout')

@@ -1,0 +1,20 @@
+/*!
+ * Start Bootstrap - Blog Home HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+body {
+    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+footer {
+    margin: 50px 0;
+}
+
+.comment {padding:15px; border: 1px solid black; width:400px; margin:15px;}
+
+ul.edit { list-style-image: url('page_edit.png');border-radius: 4px;}
+ul.delete { list-style-image: url('delete.png');border-radius: 4px;}
+ul.accept { list-style-image: url('accept.png'); background-color:lightgreen; font-weight:bold; padding:15px 15px 15px 30px; width:400px; border-radius: 4px;}
+ul.error { list-style-image: url('exclamation.png'); background-color:#FC6262; font-weight:bold; padding:15px 15px 15px 30px; width:400px; border-radius: 4px;}

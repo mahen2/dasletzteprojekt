@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-19 15:14+0200\n"
+"POT-Creation-Date: 2014-08-19 19:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -110,11 +110,11 @@ msgstr ""
 msgid "Du wurdest erfolgreich ausgeloggt!"
 msgstr ""
 
-#: templates/anzeige.htm:8
+#: templates/anzeige.htm:7
 msgid "Einträge"
 msgstr ""
 
-#: templates/anzeige.htm:15 templates/anzeige_single.htm:14
+#: templates/anzeige.htm:14 templates/anzeige_single.htm:14
 msgid "geschrieben von:"
 msgstr ""
 
@@ -124,10 +124,10 @@ msgid "Datum:"
 msgstr ""
 
 #: templates/anzeige.htm:21
-msgid "weiterlesen »"
+msgid "weiterlesen "
 msgstr ""
 
-#: templates/anzeige.htm:28
+#: templates/anzeige.htm:29
 msgid "Seiten:"
 msgstr ""
 
@@ -172,31 +172,31 @@ msgstr ""
 msgid "URL-Titel:"
 msgstr ""
 
-#: templates/index.htm:18 templates/profile.htm:8
+#: templates/index.htm:59 templates/profile.htm:8
 msgid "Mein Profil"
 msgstr ""
 
-#: templates/index.htm:18
+#: templates/index.htm:59
 msgid "Neuen Blogeintrag schreiben"
 msgstr ""
 
-#: templates/index.htm:18
+#: templates/index.htm:59
 msgid "Meine Blogeinträge verwalten"
 msgstr ""
 
-#: templates/index.htm:18
+#: templates/index.htm:59
 msgid "Ausloggen"
 msgstr ""
 
-#: templates/index.htm:18
+#: templates/index.htm:59
 msgid "Login"
 msgstr ""
 
-#: templates/index.htm:18 templates/register.htm:8
+#: templates/index.htm:59 templates/register.htm:8
 msgid "Registrieren"
 msgstr ""
 
-#: templates/index.htm:18
+#: templates/index.htm:108 templates/index.htm:113
 msgid "suchen ..."
 msgstr ""
 

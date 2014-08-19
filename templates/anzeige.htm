@@ -3,24 +3,27 @@
 
 {% block content %}
 
-<h1>Blog</h1>
-
-<h2>{{ _('Einträge') }}</h2>
+                <h1 class="page-header">
+                    Blog
+                    <small>{{title}}</small>
+                </h1>
+<!--<h2>{{ _('Einträge') }}</h2>-->
 
 	
 		{% for line in entries: %}
 			
-			<h3><a href="/artikel/{{line['url_titel']}}">{{nl2br(line['titel']) | safe}}</a></h3>
-			<small>
-				{{ _('geschrieben von:') }} {{line['geschriebenvonbenutzername']}}<br>
-				{{ _('Datum:') }} {{line['datum']}}
-			</small>
+			<h2><a href="/artikel/{{line['url_titel']}}">{{nl2br(line['titel']) | safe}}</a></h2>
+                <p class="lead">
+                   {{ _('geschrieben von:') }} {{line['geschriebenvonbenutzername']}}
+                </p>
+                <p><span class="glyphicon glyphicon-time"></span> {{ _('Datum:') }} {{line['datum']}}</p>
 			
 			<p>{{teile_text_zum_weiterlesen(nl2br(line['text']))[0] | safe}}</p>
 			{%  if teile_text_zum_weiterlesen(nl2br(line['text']))[1]!='': %}
-			<p><a href="/artikel/{{line['url_titel']}}">{{ _('weiterlesen »') }}</a></p>
+            <a class="btn btn-primary" href="/artikel/{{line['url_titel']}}">{{ _('weiterlesen ') }}<span class="glyphicon glyphicon-chevron-right"></span></a>
+			
 			{% endif %}
-			<hr />
+			<hr>
 			
 			
 		{% endfor %}
