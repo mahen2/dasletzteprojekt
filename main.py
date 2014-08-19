@@ -69,7 +69,6 @@ def highlight_word(text, word):
         
         return " ".join(text_list_neu)
     else:
-        print 22222
         return text
 app.jinja_env.globals.update(highlight_word=highlight_word)
 
@@ -218,8 +217,6 @@ def hello_world(seite_von):
     seite_von = seite_von * eintraege_auf_seite
     seite_bis = seite_von + eintraege_auf_seite
     
-    print seite_von
-    print seite_bis
     searchform = SearchForm(csrf_enabled=False)
     entries=Entry.query.with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).slice(seite_von,seite_bis)
     number_of_results = db.engine.execute(text("SELECT count(id) as anzahl from blogeintrag"))
@@ -251,7 +248,6 @@ def artikel(url_titel):
     highlight=''
     if request.args.get('highlight'):
         highlight = request.args.get('highlight')
-    print "hughlight: "+highlight
     searchform = SearchForm(csrf_enabled=False)
     entry = Entry.query.filter_by(url_titel=url_titel).with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).first()
     
@@ -296,7 +292,6 @@ def password():
     if passwordform.validate_on_submit():
         user = User.query.filter_by(username=session['username']).first()
         # Überprüfen ob md5-gehashtes Passwort in der DB mit md5 gehashtem Formular-Passwort übereinstimmt
-        print hashlib.md5(passwordform.password_old.data+user.salt).hexdigest()
         if user is not None and user.passwort == hashlib.md5(passwordform.password_old.data+user.salt).hexdigest():
             neues_pw = hashlib.md5(passwordform.password1.data+user.salt).hexdigest()
             # neues Passwort hashen und in die DB eintragen, text()-Funktion gegegn SQL-Injections
@@ -315,7 +310,6 @@ def profile():
     profileform = ChangeProfileForm()
     if profileform.validate_on_submit():
         query = text("UPDATE benutzer SET vorname=:vorname, nachname=:nachname WHERE username=:username")
-        print profileform.vorname.data
         db.engine.execute(query, vorname=profileform.vorname.data, nachname=profileform.nachname.data, username=session['username'])
         flash(_(u"Profil geändert!"), 'accept')
     userdata = User.query.filter_by(username=session['username']).with_entities(User.vorname,User.nachname).first()
@@ -385,7 +379,6 @@ def edit(id):
                     form.url_titel.data = form.url_titel.data+"_"+str(time())
             
             # text()-Funktion escapet den string
-            print form.text.data
             query = text("UPDATE blogeintrag SET id=:id, titel=:titel, text=:text, url_titel=:url_titel, datum=:datum, geschriebenvonbenutzername=:geschriebenvonbenutzername where id=:id ;")
             flash(_("Eintrag bearbeitet!"), 'accept')
             # Daten ändern
