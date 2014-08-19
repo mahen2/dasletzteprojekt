@@ -12,9 +12,11 @@ footer {
     margin: 50px 0;
 }
 
-.comment {padding:15px; border: 1px solid black; width:400px; margin:15px;}
+.comment {padding:15px; border: 1px solid black; max-width:400px; margin:15px;}
 
 ul.edit { list-style-image: url('page_edit.png');border-radius: 4px;}
 ul.delete { list-style-image: url('delete.png');border-radius: 4px;}
-ul.accept { list-style-image: url('accept.png'); background-color:lightgreen; font-weight:bold; padding:15px 15px 15px 30px; width:400px; border-radius: 4px;}
-ul.error { list-style-image: url('exclamation.png'); background-color:#FC6262; font-weight:bold; padding:15px 15px 15px 30px; width:400px; border-radius: 4px;}
+ul.accept { list-style-image: url('accept.png'); background-color:lightgreen; font-weight:bold; padding:15px 15px 15px 30px; max-width:400px; border-radius: 4px;}
+ul.error { list-style-image: url('exclamation.png'); background-color:#FC6262; font-weight:bold; padding:15px 15px 15px 30px; max-width:400px; border-radius: 4px;}
+
+textarea { padding-left:5px; padding-right:5px; }

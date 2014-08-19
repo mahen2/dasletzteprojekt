@@ -52,7 +52,7 @@
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
       <label>{{ _('Nachricht:') }}<br>
-      {{form.text(cols=40, rows=10)}}</label><br>
+      {{form.text(cols=40, rows=10, style='width:100%;')}}</label><br>
       {% for error in form.errors.text %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>

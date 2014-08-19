@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+	<link rel="icon" href="/static/favicon.png">
 
     {% if title %}
     <title>{{title}} - Blog</title>
@@ -104,8 +105,9 @@ Apache 2.0 by Start Bootstrap
                 <!-- Blog Search Well -->
                 <div class="well">
                     <h4>{{_('Suche')}}</h4>
+					<form class='searchform' name='search' method='get' action='/search'>
+					
                     <div class="input-group">
-						<form class='searchform' name='search' method='get' action='/search'>
 						{{searchform.searchfield(size=30, class='form-control')}}
 					
                         <!--<input type="text" class="form-control">-->
@@ -114,16 +116,17 @@ Apache 2.0 by Start Bootstrap
                                 <span class="glyphicon glyphicon-search"></span>
                         </button>
                         </span>
-						</form>
                     </div>
+					</form>
+					
                     <!-- /.input-group -->
                 </div>
 
 
                 <!-- Side Widget Well -->
                 <div class="well">
-                    <h4>Side Widget Well</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                    <h4>Hallo!</h4>
+                    <p>bla bla bla bla bla bla bla bla blablabla bla bla.</p>
                 </div>
 
             </div>

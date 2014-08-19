@@ -253,7 +253,7 @@ def artikel(url_titel):
         highlight = request.args.get('highlight')
     print "hughlight: "+highlight
     searchform = SearchForm(csrf_enabled=False)
-    entries = Entry.query.filter_by(url_titel=url_titel).with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername)
+    entry = Entry.query.filter_by(url_titel=url_titel).with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).first()
     
     blogeintragid_res = db.engine.execute(text("SELECT id FROM blogeintrag WHERE url_titel = :url_titel"), url_titel=url_titel)
     for line in blogeintragid_res:
@@ -261,7 +261,7 @@ def artikel(url_titel):
 
     kommentare = db.engine.execute(text("SELECT * FROM kommentar WHERE blogeintragid = (SELECT id FROM blogeintrag WHERE url_titel = :url_titel)"), url_titel=url_titel)
     
-    return render_template('anzeige_single.htm', entries=entries, searchform=searchform, highlight=highlight,kommentare=kommentare, form=form, blogeintragid=blogeintragid, isactive='blog')
+    return render_template('anzeige_single.htm', entry=entry, searchform=searchform, highlight=highlight,kommentare=kommentare, form=form, blogeintragid=blogeintragid, isactive='blog', title=entry.titel)
 
 
 # Profilseite, bisher zum Passwort ändern
