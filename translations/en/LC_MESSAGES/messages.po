@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-17 19:31+0200\n"
-"PO-Revision-Date: 2014-08-17 19:32+0100\n"
+"POT-Creation-Date: 2014-08-19 15:14+0200\n"
+"PO-Revision-Date: 2014-08-19 15:20+0100\n"
 "Last-Translator: Fabian Pegel <fabian pegel hhu>\n"
 "Language-Team: en <LL@li.org>\n"
 "Language: en\n"
@@ -19,74 +19,98 @@ msgstr ""
 "Generated-By: Babel 1.3\n"
 "X-Generator: Poedit 1.6.7\n"
 
-#: main.py:144 main.py:146 main.py:148 main.py:151 main.py:153
+#: main.py:146 main.py:148 main.py:150 main.py:153 main.py:155
 msgid "Geburtsdatum entspricht nicht dem vorgegebenem Format!"
 msgstr "Birthday is not in the right format!"
 
-#: main.py:158 main.py:159 main.py:164 main.py:165 main.py:167 main.py:171
-#: main.py:172 main.py:179
+#: main.py:160 main.py:161 main.py:166 main.py:167 main.py:169 main.py:173
+#: main.py:174 main.py:181
 msgid "Bitte Feld ausfüllen!"
 msgstr "Required field"
 
-#: main.py:184
+#: main.py:186
 msgid "Bitte einen Benutzernamen eingeben!"
 msgstr "Please enter a username!"
 
-#: main.py:185
+#: main.py:188 main.py:194 main.py:195
 msgid "Bitte ein Passwort eingeben!"
 msgstr "Please enter a password!"
 
-#: main.py:190
+#: main.py:193
+msgid "Bitte einen Usernamen eingeben!"
+msgstr "Please enter a username!"
+
+#: main.py:196 main.py:208
+msgid "Bitte einen Vornamen eingeben!"
+msgstr "Please enter a prename!"
+
+#: main.py:197 main.py:209
+msgid "Bitte einen Nachnamen eingeben!"
+msgstr "Please enter a surname!"
+
+#: main.py:203
 msgid "Bitte altes Passwort eingeben!"
 msgstr "Please enter the old password!"
 
-#: main.py:191 main.py:192
+#: main.py:204 main.py:205
 msgid "Bitte ein neues Passwort eingeben!"
 msgstr "Please enter the new password!"
 
-#: main.py:226
+#: main.py:244
 msgid "Kommentar wurde angelegt!"
 msgstr "Comment posted!"
 
-#: main.py:230
+#: main.py:248
 msgid ""
 "Kommentar nicht gepostet! <a href='#kommentar_schreiben'>Zum Formular</a>"
 msgstr ""
 "Comment wasn't posted! <a href='#kommentar_schreiben'>Go to comment form</a>"
 
-#: main.py:265
+#: main.py:278
+msgid "Dieser Benutzername ist schon vergeben!"
+msgstr "This username is already taken!"
+
+#: main.py:287
+msgid "Benutzer wurde registriert!"
+msgstr "User was registered!"
+
+#: main.py:307
 msgid "Passwörter geändert!"
 msgstr "Passwords changed!"
 
-#: main.py:267
+#: main.py:309
 msgid "Altes Passwort ist falsch!"
 msgstr "Old password is not correct!"
 
-#: main.py:334
+#: main.py:322
+msgid "Profil geändert!"
+msgstr "Profile changed!"
+
+#: main.py:392
 msgid "Eintrag bearbeitet!"
 msgstr "Post successfully edited!"
 
-#: main.py:356
+#: main.py:414
 msgid "Eintrag wurde angelegt!"
 msgstr "Post was created!"
 
-#: main.py:369
+#: main.py:427
 msgid "Eintrag mit der ID "
 msgstr "Post with ID #"
 
-#: main.py:369
+#: main.py:427
 msgid " gelöscht!"
 msgstr " deleted!"
 
-#: main.py:390
+#: main.py:448
 msgid "Herzlich Willkommen, "
 msgstr "Welcome back, "
 
-#: main.py:393
+#: main.py:451
 msgid "Benutzername oder Passwort falsch!"
 msgstr "Wrong username or password!"
 
-#: main.py:405
+#: main.py:463
 msgid "Du wurdest erfolgreich ausgeloggt!"
 msgstr "You've been logged out!"
 
@@ -124,7 +148,8 @@ msgid "Nachricht:"
 msgstr "Text:"
 
 #: templates/anzeige_single.htm:68 templates/edit.htm:67 templates/new.htm:58
-#: templates/profile.htm:33
+#: templates/password.htm:33 templates/profile.htm:27
+#: templates/register.htm:42
 msgid "abschicken"
 msgstr "submit"
 
@@ -154,7 +179,7 @@ msgstr "URL title:"
 
 #: templates/index.htm:18 templates/profile.htm:8
 msgid "Mein Profil"
-msgstr "My Profile"
+msgstr "My profile"
 
 #: templates/index.htm:18
 msgid "Neuen Blogeintrag schreiben"
@@ -172,6 +197,10 @@ msgstr "Logout"
 msgid "Login"
 msgstr "Login"
 
+#: templates/index.htm:18 templates/register.htm:8
+msgid "Registrieren"
+msgstr "Register"
+
 #: templates/index.htm:18
 msgid "suchen ..."
 msgstr "search ..."
@@ -180,7 +209,7 @@ msgstr "search ..."
 msgid "Benutzername:"
 msgstr "Username:"
 
-#: templates/login.htm:17
+#: templates/login.htm:17 templates/register.htm:31
 msgid "Passwort:"
 msgstr "Password:"
 
@@ -196,20 +225,40 @@ msgstr "login"
 msgid "Neuer Eintrag"
 msgstr "New post"
 
-#: templates/profile.htm:12
+#: templates/password.htm:11
+msgid "zurück"
+msgstr "back"
+
+#: templates/password.htm:12 templates/profile.htm:28
 msgid "Passwort ändern"
 msgstr "Change password"
 
-#: templates/profile.htm:17
+#: templates/password.htm:17
 msgid "Altes Passwort:"
 msgstr "Old password:"
 
-#: templates/profile.htm:22
+#: templates/password.htm:22
 msgid "Neues Passwort:"
 msgstr "New password:"
 
-#: templates/profile.htm:27
+#: templates/password.htm:27
 msgid "Neues Passwort bestätigen:"
+msgstr "Confirm new password:"
+
+#: templates/profile.htm:16 templates/register.htm:16
+msgid "Vorname:"
+msgstr "Prename:"
+
+#: templates/profile.htm:21 templates/register.htm:21
+msgid "Nachname:"
+msgstr "Surname:"
+
+#: templates/register.htm:26
+msgid "Username:"
+msgstr "Username:"
+
+#: templates/register.htm:36
+msgid "Passwort bestätigen:"
 msgstr "Confirm new password:"
 
 #: templates/search.htm:8

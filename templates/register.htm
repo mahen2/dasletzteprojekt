@@ -1,0 +1,46 @@
+<!-- extend from base layout -->
+{% extends "index.htm" %}
+
+{% block content %}
+
+<h1>Blog</h1>
+
+<h2>{{ _('Registrieren') }}</h2>
+
+
+<div style="float:left;">
+    
+<form action="" method="post" name="edit" style="margin-left:30px;">
+    {{registerform.hidden_tag()}}
+    <p>
+      <label>{{ _('Vorname:') }}<br>
+      {{registerform.vorname(size=30)}}</label><br>
+      {% for error in registerform.errors.vorname %}
+      <span style="color: red;">[{{error}}]</span>
+      {% endfor %}<br><br>
+      <label>{{ _('Nachname:') }}<br>
+      {{registerform.nachname(size=30)}}</label><br>
+      {% for error in registerform.errors.nachname %}
+      <span style="color: red;">[{{error}}]</span>
+      {% endfor %}<br><br>
+      <label>{{ _('Username:') }}<br>
+      {{registerform.username(size=30)}}</label><br>
+      {% for error in registerform.errors.username %}
+      <span style="color: red;">[{{error}}]</span>
+      {% endfor %}<br><br>
+      <label>{{ _('Passwort:') }}<br>
+      {{registerform.password1(size=30)}}</label><br>
+      {% for error in registerform.errors.password1 %}
+      <span style="color: red;">[{{error}}]</span>
+      {% endfor %}<br>
+      <label>{{ _('Passwort bestätigen:') }}<br>
+      {{registerform.password2(size=30)}}</label><br>
+      {% for error in registerform.errors.password2 %}
+      <span style="color: red;">[{{error}}]</span>
+      {% endfor %}<br>
+  </p>
+    <p><input type="submit" value="{{ _('abschicken') }}"></p>
+</form>
+</div>
+
+{% endblock %}

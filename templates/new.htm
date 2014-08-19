@@ -39,7 +39,7 @@ function myfunc() {
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
       <label>{{ _('Datum:') }}<br>
-      {{form.datum(size=30)}}</label><br>
+      {{form.datum(size=30, value=zeit)}}</label><br>
       {% for error in form.errors.datum %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>

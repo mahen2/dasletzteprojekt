@@ -6,10 +6,7 @@ Fabian:
 
 * responsive Design
 * Bootstrap
-* Registrierung
-* Passwörter-Salt
-* Datum schön formatieren
-* Profil bearbeiten
+* nur eigene Beiträge bearbeiten
 
 Maria:
 ------

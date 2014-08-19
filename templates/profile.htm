@@ -9,28 +9,24 @@
 
 
 <div style="float:left;">
-    <h3>{{ _('Passwort ändern') }}</h3>
     
 <form action="" method="post" name="edit" style="margin-left:30px;">
-    {{passwordform.hidden_tag()}}
+    {{profileform.hidden_tag()}}
     <p>
-      <label>{{ _('Altes Passwort:') }}<br>
-      {{passwordform.password_old(size=30)}}</label><br>
-      {% for error in passwordform.errors.password_old %}
-      <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br><br>
-      <label>{{ _('Neues Passwort:') }}<br>
-      {{passwordform.password1(size=30)}}</label><br>
-      {% for error in passwordform.errors.password1 %}
+      <label>{{ _('Vorname:') }}<br>
+      {{profileform.vorname(size=30, value=userdata['vorname'])}}</label><br>
+      {% for error in profileform.errors.vorname %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>{{ _('Neues Passwort bestätigen:') }}<br>
-      {{passwordform.password2(size=30)}}</label><br>
-      {% for error in passwordform.errors.password2 %}
+      <label>{{ _('Nachname:') }}<br>
+      {{profileform.nachname(size=30, value=userdata['nachname'])}}</label><br>
+      {% for error in profileform.errors.nachname %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
   </p>
     <p><input type="submit" value="{{ _('abschicken') }}"></p>
+	<p><a href="/password">{{ _('Passwort ändern') }}</a>
+</p>
 </form>
 </div>
 

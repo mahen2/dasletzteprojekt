@@ -6,7 +6,7 @@
 from flask import Flask, render_template, g, flash, redirect, session, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text, desc
-import hashlib, os, re
+import hashlib, os, re, random, string
 import operator
 from flask_wtf import Form 
 from flask.ext.login import LoginManager
@@ -83,6 +83,7 @@ class User(db.Model):
   username = db.Column(db.String(200))
   vorname = db.Column(db.String(200))
   nachname = db.Column(db.String(200))
+  salt = db.Column(db.String(200))
   def is_authenticated(self):
       return True
 
@@ -106,6 +107,7 @@ class User(db.Model):
       self.username = username
       self.vorname = vorname
       self.nachname = nachname
+      self.salt = salt
 
 # User-Loader für den Login
 @lm.user_loader
@@ -185,6 +187,16 @@ class LoginForm(Form):
     username = TextField('username', validators = [Required(enteruser)])
     password = PasswordField('password', validators = [Required(_("Bitte ein Passwort eingeben!"))]) 
     remember_me = BooleanField('remember_me', default = False)
+    
+# Login-Formular-Klasse
+class RegisterForm(Form):
+    username = TextField('username', validators = [Required(_("Bitte einen Usernamen eingeben!"))])
+    password1 = PasswordField('password', validators = [Required(_("Bitte ein Passwort eingeben!")), Length(min=8, message=u"Passwort muss mindestens 8 Zeichen lang sein!")])
+    password2 = PasswordField('password', validators = [Required(_("Bitte ein Passwort eingeben!")), EqualTo('password1', message=u'Passwörter müssen übereinstimmen!')]) 
+    vorname = TextField('vorname', validators = [Required(_("Bitte einen Vornamen eingeben!"))])
+    nachname = TextField('nachname', validators = [Required(_("Bitte einen Nachnamen eingeben!"))])
+    
+
 
 # Passwort-Formular-Klasse
 class ChangePassForm(Form):
@@ -192,6 +204,9 @@ class ChangePassForm(Form):
     password1    = PasswordField('password1', validators = [Required(_("Bitte ein neues Passwort eingeben!")), Length(min=8, message=u"Passwort muss mindestens 8 Zeichen lang sein!")]) 
     password2    = PasswordField('password2', validators = [Required(_("Bitte ein neues Passwort eingeben!")), EqualTo('password1', message=u'Passwörter müssen übereinstimmen!')]) 
 
+class ChangeProfileForm(Form):
+    vorname = TextField('vorname', validators = [Required(_("Bitte einen Vornamen eingeben!"))])
+    nachname = TextField('nachname', validators = [Required(_("Bitte einen Nachnamen eingeben!"))])
 
 
 # Startseite
@@ -225,7 +240,7 @@ def artikel(url_titel):
     
     if form.validate_on_submit():
         query = text("INSERT INTO kommentar ('name','email','url','text','datum', 'blogeintragid') VALUES ( :name,:email,:url,:text,:datum,:blogeintragid);")
-        db.engine.execute(query, name=form.name.data, email=form.email.data, url=form.url.data, text=form.text.data, datum=str(datetime.now()), blogeintragid=form.blogeintragid.data)
+        db.engine.execute(query, name=form.name.data, email=form.email.data, url=form.url.data, text=form.text.data, datum=str(datetime.now().strftime('%d.%m.%Y - %H:%M Uhr')), blogeintragid=form.blogeintragid.data)
         flash(_("Kommentar wurde angelegt!"), 'accept')
         return redirect('/artikel/'+ url_titel + '#kommentar_schreiben')
     else:
@@ -251,17 +266,41 @@ def artikel(url_titel):
     return render_template('anzeige_single.htm', entries=entries, searchform=searchform, highlight=highlight,kommentare=kommentare, form=form, blogeintragid=blogeintragid)
 
 
+# Profilseite, bisher zum Passwort ändern
+@app.route('/register', methods = ['GET', 'POST'])
+def register(): 
+    searchform = SearchForm(csrf_enabled=False)
+    registerform = RegisterForm()
+    if registerform.validate_on_submit():
+        liste_usernamen = db.engine.execute(text("SELECT username FROM benutzer"))
+        for line in liste_usernamen:
+            if registerform.username.data == line['username']:
+                flash(_("Dieser Benutzername ist schon vergeben!"),'error')
+                return render_template('register.htm', searchform=searchform, registerform=registerform)  
+        salt = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(32))
+
+        
+        
+        query = text("INSERT INTO benutzer ('id', 'username', 'passwort', 'vorname', 'nachname', 'salt') VALUES (NULL, :username, :passwort, :vorname, :nachname, :salt);")
+        db.engine.execute(query, username=registerform.username.data, passwort=hashlib.md5(registerform.password1.data+salt).hexdigest(), vorname=registerform.vorname.data, nachname=registerform.nachname.data, salt=salt)
+        
+        flash(_("Benutzer wurde registriert!"),'accept')
+    return render_template('register.htm', searchform=searchform, registerform=registerform)   
+
+
 
 # Profilseite, bisher zum Passwort ändern
-@app.route('/profile', methods = ['GET', 'POST'])
-def profile(): 
+@app.route('/password', methods = ['GET', 'POST'])
+@login_required
+def password(): 
     searchform = SearchForm(csrf_enabled=False)
     passwordform = ChangePassForm()
     if passwordform.validate_on_submit():
         user = User.query.filter_by(username=session['username']).first()
         # Überprüfen ob md5-gehashtes Passwort in der DB mit md5 gehashtem Formular-Passwort übereinstimmt
-        if user is not None and user.passwort == hashlib.md5(passwordform.password_old.data).hexdigest():
-            neues_pw = hashlib.md5(passwordform.password1.data).hexdigest()
+        print hashlib.md5(passwordform.password_old.data+user.salt).hexdigest()
+        if user is not None and user.passwort == hashlib.md5(passwordform.password_old.data+user.salt).hexdigest():
+            neues_pw = hashlib.md5(passwordform.password1.data+user.salt).hexdigest()
             # neues Passwort hashen und in die DB eintragen, text()-Funktion gegegn SQL-Injections
             query = text("UPDATE benutzer SET passwort=:passwort WHERE username=:username")
             db.engine.execute(query, username=session['username'], passwort=neues_pw)
@@ -269,7 +308,23 @@ def profile():
         else:
             flash(_("Altes Passwort ist falsch!"),'error')
         
-    return render_template('profile.htm', searchform=searchform, passwordform=passwordform)   
+    return render_template('password.htm', searchform=searchform, passwordform=passwordform)   
+    
+@app.route('/profile', methods = ['GET', 'POST'])
+@login_required
+def profile(): 
+    searchform = SearchForm(csrf_enabled=False)
+    profileform = ChangeProfileForm()
+    if profileform.validate_on_submit():
+        query = text("UPDATE benutzer SET vorname=:vorname, nachname=:nachname WHERE username=:username")
+        print profileform.vorname.data
+        db.engine.execute(query, vorname=profileform.vorname.data, nachname=profileform.nachname.data, username=session['username'])
+        flash(_(u"Profil geändert!"), 'accept')
+    userdata = User.query.filter_by(username=session['username']).with_entities(User.vorname,User.nachname).first()
+   
+        
+    return render_template('profile.htm', searchform=searchform, profileform=profileform, userdata=userdata)   
+
 
 
 # Textanalyse UNFERTIG
@@ -359,7 +414,7 @@ def new():
         flash(_("Eintrag wurde angelegt!"), 'accept')
         return redirect('/new')
     else:
-        return render_template('new.htm', form=form, searchform=searchform)
+        return render_template('new.htm', form=form, searchform=searchform, zeit=str(datetime.now().strftime('%d.%m.%Y')))
     
     
 # Eintrag löschen
@@ -387,7 +442,7 @@ def login():
             session.pop('remember_me', None)
         user = User.query.filter_by(username=p_username).first()
         # wenn Passwort aus dem Formular und aus der DB übereinstimmen, logge User ein
-        if user is not None and user.passwort == hashlib.md5(p_password).hexdigest():
+        if user is not None and user.passwort == hashlib.md5(p_password+user.salt).hexdigest():
             session['username']=user.username
             login_user(user, remember = remember_me)
             flash(_('Herzlich Willkommen, ')+session['username']+'!', 'accept')
