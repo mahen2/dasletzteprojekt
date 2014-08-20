@@ -401,7 +401,7 @@ def new():
             if form.url_titel.data == line['url_titel']:
                 form.url_titel.data = form.url_titel.data+"_"+str(time())
         if form.url_titel.data == '':
-            form.url_titel.data = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(16))
+            form.url_titel.data = ''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_lowercase) for _ in range(16))
         query = text("INSERT INTO blogeintrag ('titel', 'url_titel', 'datum', 'text', 'geschriebenvonbenutzername') VALUES (:titel, :url_titel, :datum, :text, :geschriebenvonbenutzername);")
         db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, geschriebenvonbenutzername=session['username'])
         flash(_("Eintrag wurde angelegt!"), 'accept')
