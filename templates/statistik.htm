@@ -16,7 +16,7 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
 
-          ['Term', 'Anzahl', { role: 'style' },  { role: 'annotation' }],
+          [{{ _("'Term'") }}, {{ _("'Anzahl'") }}, { role: 'style' },  { role: 'annotation' }],
                   
         		{% for key in ranking: %}
           ['{{key}}', {{ranking[key]}}, '#0B5A83', '{{ranking[key]}}'],
@@ -26,9 +26,9 @@
         ]);
 
         var options = {
-          title: 'Top Terme',
-          vAxis: {title: 'Term',  titleTextStyle: {color: 'black'}},
-			hAxis: {title: 'Anzahl',  titleTextStyle: {color: 'black'}},
+          title: {{ _("'Top Terme'") }},
+          vAxis: {title: {{ _("'Term'") }},  titleTextStyle: {color: 'black'}},
+			hAxis: {title: {{ _("'Anzahl'") }},  titleTextStyle: {color: 'black'}},
 			legend: { position: "none" },
         };
 

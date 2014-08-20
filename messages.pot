@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-19 19:20+0200\n"
+"POT-Creation-Date: 2014-08-20 18:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,142 +17,138 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: main.py:146 main.py:148 main.py:150 main.py:153 main.py:155
-msgid "Geburtsdatum entspricht nicht dem vorgegebenem Format!"
-msgstr ""
-
-#: main.py:160 main.py:161 main.py:166 main.py:167 main.py:169 main.py:173
-#: main.py:174 main.py:181
+#: main.py:159 main.py:160 main.py:165 main.py:166 main.py:168 main.py:172
+#: main.py:173 main.py:180
 msgid "Bitte Feld ausfüllen!"
 msgstr ""
 
-#: main.py:186
+#: main.py:185
 msgid "Bitte einen Benutzernamen eingeben!"
 msgstr ""
 
-#: main.py:188 main.py:194 main.py:195
+#: main.py:187 main.py:193 main.py:194
 msgid "Bitte ein Passwort eingeben!"
 msgstr ""
 
-#: main.py:193
+#: main.py:192
 msgid "Bitte einen Usernamen eingeben!"
 msgstr ""
 
-#: main.py:196 main.py:208
+#: main.py:195 main.py:207
 msgid "Bitte einen Vornamen eingeben!"
 msgstr ""
 
-#: main.py:197 main.py:209
+#: main.py:196 main.py:208
 msgid "Bitte einen Nachnamen eingeben!"
 msgstr ""
 
-#: main.py:203
+#: main.py:202
 msgid "Bitte altes Passwort eingeben!"
 msgstr ""
 
-#: main.py:204 main.py:205
+#: main.py:203 main.py:204
 msgid "Bitte ein neues Passwort eingeben!"
 msgstr ""
 
-#: main.py:244
+#: main.py:241
 msgid "Kommentar wurde angelegt!"
 msgstr ""
 
-#: main.py:248
+#: main.py:245
 msgid "Kommentar nicht gepostet! <a href='#kommentar_schreiben'>Zum Formular</a>"
 msgstr ""
 
-#: main.py:278
+#: main.py:272
 msgid "Dieser Benutzername ist schon vergeben!"
 msgstr ""
 
-#: main.py:287
+#: main.py:281
 msgid "Benutzer wurde registriert!"
 msgstr ""
 
-#: main.py:307
+#: main.py:300
 msgid "Passwörter geändert!"
 msgstr ""
 
-#: main.py:309
+#: main.py:302
 msgid "Altes Passwort ist falsch!"
 msgstr ""
 
-#: main.py:322
+#: main.py:314
 msgid "Profil geändert!"
 msgstr ""
 
-#: main.py:392
+#: main.py:384
 msgid "Eintrag bearbeitet!"
 msgstr ""
 
-#: main.py:414
+#: main.py:406
 msgid "Eintrag wurde angelegt!"
 msgstr ""
 
-#: main.py:427
+#: main.py:419
 msgid "Eintrag mit der ID "
 msgstr ""
 
-#: main.py:427
+#: main.py:419
 msgid " gelöscht!"
 msgstr ""
 
-#: main.py:448
+#: main.py:440
 msgid "Herzlich Willkommen, "
 msgstr ""
 
-#: main.py:451
+#: main.py:443
 msgid "Benutzername oder Passwort falsch!"
 msgstr ""
 
-#: main.py:463
+#: main.py:454
 msgid "Du wurdest erfolgreich ausgeloggt!"
 msgstr ""
 
-#: templates/anzeige.htm:7
+#: templates/anzeige.htm:9
 msgid "Einträge"
 msgstr ""
 
-#: templates/anzeige.htm:14 templates/anzeige_single.htm:14
+#: templates/anzeige.htm:16 templates/anzeige_single.htm:14
 msgid "geschrieben von:"
 msgstr ""
 
-#: templates/anzeige.htm:16 templates/anzeige_single.htm:15
-#: templates/edit.htm:50 templates/new.htm:41
+#: templates/anzeige.htm:18 templates/anzeige_single.htm:15
+#: templates/edit.htm:50 templates/new.htm:40
 msgid "Datum:"
 msgstr ""
 
-#: templates/anzeige.htm:21
+#: templates/anzeige.htm:22
 msgid "weiterlesen "
 msgstr ""
 
-#: templates/anzeige.htm:29
+#: templates/anzeige.htm:30
 msgid "Seiten:"
 msgstr ""
 
-#: templates/anzeige_single.htm:23
+#: templates/anzeige_single.htm:22
 msgid "Kommentare"
 msgstr ""
 
-#: templates/anzeige_single.htm:42
+#: templates/anzeige_single.htm:41
 msgid "Kommentar schreiben"
 msgstr ""
 
-#: templates/anzeige_single.htm:62 templates/edit.htm:55 templates/new.htm:46
+#: templates/anzeige_single.htm:61 templates/edit.htm:55 templates/new.htm:45
 msgid "Nachricht:"
 msgstr ""
 
-#: templates/anzeige_single.htm:68 templates/edit.htm:67 templates/new.htm:58
-#: templates/password.htm:33 templates/profile.htm:27 templates/register.htm:42
+#: templates/anzeige_single.htm:67 templates/edit.htm:67 templates/new.htm:57
+#: templates/password.htm:32 templates/profile.htm:26 templates/register.htm:41
 msgid "abschicken"
 msgstr ""
 
-#: templates/edit.htm:9
+#: templates/edit.htm:8
 msgid "neuen Eintrag anlegen"
 msgstr ""
 
-#: templates/edit.htm:12
+#: templates/edit.htm:11
 msgid "Einträge bearbeiten"
 msgstr ""
 
@@ -164,111 +160,127 @@ msgstr ""
 msgid "Eintrag löschen"
 msgstr ""
 
-#: templates/edit.htm:45 templates/new.htm:36
+#: templates/edit.htm:45 templates/new.htm:35
 msgid "Titel:"
 msgstr ""
 
-#: templates/edit.htm:60 templates/new.htm:51
+#: templates/edit.htm:60 templates/new.htm:50
 msgid "URL-Titel:"
 msgstr ""
 
-#: templates/index.htm:59 templates/profile.htm:8
+#: templates/index.htm:59 templates/profile.htm:7
 msgid "Mein Profil"
 msgstr ""
 
-#: templates/index.htm:59
+#: templates/index.htm:60
 msgid "Neuen Blogeintrag schreiben"
 msgstr ""
 
-#: templates/index.htm:59
+#: templates/index.htm:61
 msgid "Meine Blogeinträge verwalten"
 msgstr ""
 
-#: templates/index.htm:59
+#: templates/index.htm:62 templates/statistik.htm:7
+msgid "Statistik"
+msgstr ""
+
+#: templates/index.htm:63
 msgid "Ausloggen"
 msgstr ""
 
-#: templates/index.htm:59
+#: templates/index.htm:65
 msgid "Login"
 msgstr ""
 
-#: templates/index.htm:59 templates/register.htm:8
+#: templates/index.htm:65 templates/register.htm:7
 msgid "Registrieren"
 msgstr ""
 
-#: templates/index.htm:108 templates/index.htm:113
+#: templates/index.htm:111
 msgid "suchen ..."
 msgstr ""
 
-#: templates/login.htm:12
+#: templates/index.htm:114 templates/search.htm:7
+msgid "Suche"
+msgstr ""
+
+#: templates/login.htm:11
 msgid "Benutzername:"
 msgstr ""
 
-#: templates/login.htm:17 templates/register.htm:31
+#: templates/login.htm:16 templates/register.htm:30
 msgid "Passwort:"
 msgstr ""
 
-#: templates/login.htm:24
+#: templates/login.htm:23
 msgid "eingeloggt bleiben"
 msgstr ""
 
-#: templates/login.htm:25
+#: templates/login.htm:24
 msgid "einloggen"
 msgstr ""
 
-#: templates/new.htm:32
+#: templates/new.htm:31
 msgid "Neuer Eintrag"
 msgstr ""
 
-#: templates/password.htm:11
+#: templates/password.htm:10
 msgid "zurück"
 msgstr ""
 
-#: templates/password.htm:12 templates/profile.htm:28
+#: templates/password.htm:11 templates/profile.htm:27
 msgid "Passwort ändern"
 msgstr ""
 
-#: templates/password.htm:17
+#: templates/password.htm:16
 msgid "Altes Passwort:"
 msgstr ""
 
-#: templates/password.htm:22
+#: templates/password.htm:21
 msgid "Neues Passwort:"
 msgstr ""
 
-#: templates/password.htm:27
+#: templates/password.htm:26
 msgid "Neues Passwort bestätigen:"
 msgstr ""
 
-#: templates/profile.htm:16 templates/register.htm:16
+#: templates/profile.htm:15 templates/register.htm:15
 msgid "Vorname:"
 msgstr ""
 
-#: templates/profile.htm:21 templates/register.htm:21
+#: templates/profile.htm:20 templates/register.htm:20
 msgid "Nachname:"
 msgstr ""
 
-#: templates/register.htm:26
+#: templates/register.htm:25
 msgid "Username:"
 msgstr ""
 
-#: templates/register.htm:36
+#: templates/register.htm:35
 msgid "Passwort bestätigen:"
 msgstr ""
 
 #: templates/search.htm:8
-msgid "Suche"
-msgstr ""
-
-#: templates/search.htm:9
 msgid "Der Begriff"
 msgstr ""
 
-#: templates/search.htm:9
+#: templates/search.htm:8
 msgid "kommt in folgenden Artikeln vor:"
 msgstr ""
 
-#: templates/search.htm:19
+#: templates/search.htm:18
 msgid "Keine Einträge gefunden!"
+msgstr ""
+
+#: templates/statistik.htm:19 templates/statistik.htm:30
+msgid "'Term'"
+msgstr ""
+
+#: templates/statistik.htm:19 templates/statistik.htm:31
+msgid "'Anzahl'"
+msgstr ""
+
+#: templates/statistik.htm:29
+msgid "'Top Terme'"
 msgstr ""
 

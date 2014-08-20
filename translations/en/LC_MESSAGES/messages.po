@@ -3,269 +3,291 @@
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-19 19:12+0200\n"
-"PO-Revision-Date: 2014-08-19 19:20+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-08-20 18:29+0200\n"
+"PO-Revision-Date: 2014-08-20 18:30+0100\n"
+"Last-Translator: Fabian Pegel <fabian pegel hhu>\n"
 "Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 1.3\n"
+"X-Generator: Poedit 1.6.7\n"
 
-#: main.py:146 main.py:148 main.py:150 main.py:153 main.py:155
-msgid "Geburtsdatum entspricht nicht dem vorgegebenem Format!"
-msgstr ""
-
-#: main.py:160 main.py:161 main.py:166 main.py:167 main.py:169 main.py:173
-#: main.py:174 main.py:181
+#: main.py:159 main.py:160 main.py:165 main.py:166 main.py:168 main.py:172
+#: main.py:173 main.py:180
 msgid "Bitte Feld ausfüllen!"
-msgstr ""
+msgstr "Required field"
 
-#: main.py:186
+#: main.py:185
 msgid "Bitte einen Benutzernamen eingeben!"
-msgstr ""
+msgstr "Please enter a username!"
 
-#: main.py:188 main.py:194 main.py:195
+#: main.py:187 main.py:193 main.py:194
 msgid "Bitte ein Passwort eingeben!"
-msgstr ""
+msgstr "Please enter a password!"
 
-#: main.py:193
+#: main.py:192
 msgid "Bitte einen Usernamen eingeben!"
-msgstr ""
+msgstr "Please enter a username!"
+
+#: main.py:195 main.py:207
+msgid "Bitte einen Vornamen eingeben!"
+msgstr "Please enter a prename!"
 
 #: main.py:196 main.py:208
-msgid "Bitte einen Vornamen eingeben!"
-msgstr ""
-
-#: main.py:197 main.py:209
 msgid "Bitte einen Nachnamen eingeben!"
-msgstr ""
+msgstr "Please enter a surname!"
 
-#: main.py:203
+#: main.py:202
 msgid "Bitte altes Passwort eingeben!"
-msgstr ""
+msgstr "Please enter the old password!"
 
-#: main.py:204 main.py:205
+#: main.py:203 main.py:204
 msgid "Bitte ein neues Passwort eingeben!"
-msgstr ""
+msgstr "Please enter the new password!"
 
-#: main.py:244
+#: main.py:241
 msgid "Kommentar wurde angelegt!"
-msgstr ""
+msgstr "Comment posted!"
 
-#: main.py:248
-msgid "Kommentar nicht gepostet! <a href='#kommentar_schreiben'>Zum Formular</a>"
+#: main.py:245
+msgid ""
+"Kommentar nicht gepostet! <a href='#kommentar_schreiben'>Zum Formular</a>"
 msgstr ""
+"Comment wasn't posted! <a href='#kommentar_schreiben'>Go to comment form</a>"
 
-#: main.py:278
+#: main.py:272
 msgid "Dieser Benutzername ist schon vergeben!"
-msgstr ""
+msgstr "This username is already taken!"
 
-#: main.py:287
+#: main.py:281
 msgid "Benutzer wurde registriert!"
-msgstr ""
+msgstr "User was registered!"
 
-#: main.py:307
+#: main.py:300
 msgid "Passwörter geändert!"
-msgstr ""
+msgstr "Passwords changed!"
 
-#: main.py:309
+#: main.py:302
 msgid "Altes Passwort ist falsch!"
-msgstr ""
+msgstr "Old password is not correct!"
 
-#: main.py:322
+#: main.py:314
 msgid "Profil geändert!"
-msgstr ""
+msgstr "Profile changed!"
 
-#: main.py:392
+#: main.py:384
 msgid "Eintrag bearbeitet!"
-msgstr ""
+msgstr "Post successfully edited!"
 
-#: main.py:414
+#: main.py:406
 msgid "Eintrag wurde angelegt!"
-msgstr ""
+msgstr "Post was created!"
 
-#: main.py:427
+#: main.py:419
 msgid "Eintrag mit der ID "
-msgstr ""
+msgstr "Post with ID #"
 
-#: main.py:427
+#: main.py:419
 msgid " gelöscht!"
-msgstr ""
+msgstr " deleted!"
 
-#: main.py:448
+#: main.py:440
 msgid "Herzlich Willkommen, "
-msgstr ""
+msgstr "Welcome back, "
 
-#: main.py:451
+#: main.py:443
 msgid "Benutzername oder Passwort falsch!"
-msgstr ""
+msgstr "Wrong username or password!"
 
-#: main.py:463
+#: main.py:454
 msgid "Du wurdest erfolgreich ausgeloggt!"
-msgstr ""
+msgstr "You've been logged out!"
 
-#: templates/anzeige.htm:7
+#: templates/anzeige.htm:9
 msgid "Einträge"
-msgstr ""
+msgstr "Posts"
 
-#: templates/anzeige.htm:14 templates/anzeige_single.htm:14
+#: templates/anzeige.htm:16 templates/anzeige_single.htm:14
 msgid "geschrieben von:"
-msgstr ""
+msgstr "by:"
 
-#: templates/anzeige.htm:16 templates/anzeige_single.htm:15
-#: templates/edit.htm:50 templates/new.htm:41
+#: templates/anzeige.htm:18 templates/anzeige_single.htm:15
+#: templates/edit.htm:50 templates/new.htm:40
 msgid "Datum:"
-msgstr ""
+msgstr "date:"
 
-#: templates/anzeige.htm:21
+#: templates/anzeige.htm:22
 msgid "weiterlesen "
-msgstr ""
+msgstr "continue reading "
 
-#: templates/anzeige.htm:29
+#: templates/anzeige.htm:30
 msgid "Seiten:"
-msgstr ""
+msgstr "Pages:"
 
-#: templates/anzeige_single.htm:23
+#: templates/anzeige_single.htm:22
 msgid "Kommentare"
-msgstr ""
+msgstr "Comments"
 
-#: templates/anzeige_single.htm:42
+#: templates/anzeige_single.htm:41
 msgid "Kommentar schreiben"
-msgstr ""
+msgstr "Write a comment"
 
-#: templates/anzeige_single.htm:62 templates/edit.htm:55 templates/new.htm:46
+#: templates/anzeige_single.htm:61 templates/edit.htm:55 templates/new.htm:45
 msgid "Nachricht:"
-msgstr ""
+msgstr "Text:"
 
-#: templates/anzeige_single.htm:68 templates/edit.htm:67 templates/new.htm:58
-#: templates/password.htm:33 templates/profile.htm:27 templates/register.htm:42
+#: templates/anzeige_single.htm:67 templates/edit.htm:67 templates/new.htm:57
+#: templates/password.htm:32 templates/profile.htm:26
+#: templates/register.htm:41
 msgid "abschicken"
-msgstr ""
+msgstr "submit"
 
-#: templates/edit.htm:9
+#: templates/edit.htm:8
 msgid "neuen Eintrag anlegen"
-msgstr ""
+msgstr "write new post"
 
-#: templates/edit.htm:12
+#: templates/edit.htm:11
 msgid "Einträge bearbeiten"
-msgstr ""
+msgstr "Edit posts"
 
 #: templates/edit.htm:40
 msgid "'Möchtest du den Eintrag wirklich löschen?'"
-msgstr ""
+msgstr "'Do you really want to delete this post?'"
 
 #: templates/edit.htm:40
 msgid "Eintrag löschen"
-msgstr ""
+msgstr "Delete post"
 
-#: templates/edit.htm:45 templates/new.htm:36
+#: templates/edit.htm:45 templates/new.htm:35
 msgid "Titel:"
-msgstr ""
+msgstr "Title:"
 
-#: templates/edit.htm:60 templates/new.htm:51
+#: templates/edit.htm:60 templates/new.htm:50
 msgid "URL-Titel:"
-msgstr ""
+msgstr "URL title:"
 
-#: templates/index.htm:59 templates/profile.htm:8
+#: templates/index.htm:59 templates/profile.htm:7
 msgid "Mein Profil"
-msgstr ""
+msgstr "My profile"
 
-#: templates/index.htm:59
+#: templates/index.htm:60
 msgid "Neuen Blogeintrag schreiben"
-msgstr ""
+msgstr "Write new blog post"
 
-#: templates/index.htm:59
+#: templates/index.htm:61
 msgid "Meine Blogeinträge verwalten"
-msgstr ""
+msgstr "Manage blog posts"
 
-#: templates/index.htm:59
+#: templates/index.htm:62 templates/statistik.htm:7
+msgid "Statistik"
+msgstr "Statistics"
+
+#: templates/index.htm:63
 msgid "Ausloggen"
-msgstr ""
+msgstr "Logout"
 
-#: templates/index.htm:59
+#: templates/index.htm:65
 msgid "Login"
-msgstr ""
+msgstr "Login"
 
-#: templates/index.htm:59 templates/register.htm:8
+#: templates/index.htm:65 templates/register.htm:7
 msgid "Registrieren"
-msgstr ""
+msgstr "Register"
 
-#: templates/login.htm:12
+#: templates/index.htm:111
+msgid "suchen ..."
+msgstr "search ..."
+
+#: templates/index.htm:114 templates/search.htm:7
+msgid "Suche"
+msgstr "Search"
+
+#: templates/login.htm:11
 msgid "Benutzername:"
-msgstr ""
+msgstr "Username:"
 
-#: templates/login.htm:17 templates/register.htm:31
+#: templates/login.htm:16 templates/register.htm:30
 msgid "Passwort:"
-msgstr ""
+msgstr "Password:"
+
+#: templates/login.htm:23
+msgid "eingeloggt bleiben"
+msgstr "keep me logged in"
 
 #: templates/login.htm:24
-msgid "eingeloggt bleiben"
-msgstr ""
-
-#: templates/login.htm:25
 msgid "einloggen"
-msgstr ""
+msgstr "login"
 
-#: templates/new.htm:32
+#: templates/new.htm:31
 msgid "Neuer Eintrag"
-msgstr ""
+msgstr "New post"
 
-#: templates/password.htm:11
+#: templates/password.htm:10
 msgid "zurück"
-msgstr ""
+msgstr "back"
 
-#: templates/password.htm:12 templates/profile.htm:28
+#: templates/password.htm:11 templates/profile.htm:27
 msgid "Passwort ändern"
-msgstr ""
+msgstr "Change password"
 
-#: templates/password.htm:17
+#: templates/password.htm:16
 msgid "Altes Passwort:"
-msgstr ""
+msgstr "Old password:"
 
-#: templates/password.htm:22
+#: templates/password.htm:21
 msgid "Neues Passwort:"
-msgstr ""
+msgstr "New password:"
 
-#: templates/password.htm:27
+#: templates/password.htm:26
 msgid "Neues Passwort bestätigen:"
-msgstr ""
+msgstr "Confirm new password:"
 
-#: templates/profile.htm:16 templates/register.htm:16
+#: templates/profile.htm:15 templates/register.htm:15
 msgid "Vorname:"
-msgstr ""
+msgstr "Prename:"
 
-#: templates/profile.htm:21 templates/register.htm:21
+#: templates/profile.htm:20 templates/register.htm:20
 msgid "Nachname:"
-msgstr ""
+msgstr "Surname:"
 
-#: templates/register.htm:26
+#: templates/register.htm:25
 msgid "Username:"
-msgstr ""
+msgstr "Username:"
 
-#: templates/register.htm:36
+#: templates/register.htm:35
 msgid "Passwort bestätigen:"
-msgstr ""
+msgstr "Confirm new password:"
 
 #: templates/search.htm:8
-msgid "Suche"
-msgstr ""
-
-#: templates/search.htm:9
 msgid "Der Begriff"
-msgstr ""
+msgstr "The term"
 
-#: templates/search.htm:9
+#: templates/search.htm:8
 msgid "kommt in folgenden Artikeln vor:"
-msgstr ""
+msgstr "was found in these posts:"
 
-#: templates/search.htm:19
+#: templates/search.htm:18
 msgid "Keine Einträge gefunden!"
-msgstr ""
+msgstr "No posts found!"
 
+#: templates/statistik.htm:19 templates/statistik.htm:30
+msgid "'Term'"
+msgstr "'Term'"
+
+#: templates/statistik.htm:19 templates/statistik.htm:31
+msgid "'Anzahl'"
+msgstr "'Count'"
+
+#: templates/statistik.htm:29
+msgid "'Top Terme'"
+msgstr "'Top Terms'"
+
+#~ msgid "Geburtsdatum entspricht nicht dem vorgegebenem Format!"
+#~ msgstr "Birthday is not in the right format!"
