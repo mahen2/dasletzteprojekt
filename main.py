@@ -218,7 +218,7 @@ def hello_world(seite_von):
     seite_bis = seite_von + eintraege_auf_seite
     
     searchform = SearchForm(csrf_enabled=False)
-    entries=Entry.query.with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).slice(seite_von,seite_bis)
+    entries=Entry.query.with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).order_by(desc(Entry.id)).slice(seite_von,seite_bis)
     number_of_results = db.engine.execute(text("SELECT count(id) as anzahl from blogeintrag"))
     for line in number_of_results:
         anzahl = line['anzahl']
