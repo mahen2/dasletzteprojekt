@@ -20,3 +20,5 @@ ul.accept { list-style-image: url('accept.png'); background-color:lightgreen; fo
 ul.error { list-style-image: url('exclamation.png'); background-color:#FC6262; font-weight:bold; padding:15px 15px 15px 30px; max-width:400px; border-radius: 4px;}
 
 textarea { padding-left:5px; padding-right:5px; }
+
+#tagsdiv {display:none;}

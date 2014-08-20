@@ -62,6 +62,16 @@
       {% for error in form.errors.url_titel %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
+	  <p><a id="button" style='cursor:pointer;'>Tags bearbeiten</a></p><br>
+	  <div id="tagsdiv">
+      <label>{{ _('Tags:') }}<br>
+		  <strong>Bitte jeden Tag in neue Zeile posten!</strong><br>
+      {{form.tags(cols=40, rows=10, style='width:100%;')}}</label><br>
+      {% for error in form.errors.tags %}
+      <span style="color: red;">[{{error}}]</span>
+      {% endfor %}<br>
+ 	  </div>
+	  
 	  
   </p>
   <p><input type="submit" value="{{ _('abschicken') }}"></p>

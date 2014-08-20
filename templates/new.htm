@@ -2,7 +2,9 @@
 {% extends "index.htm" %}
 
 {% block content %}
+
 <script>
+
 window.addEventListener("load", update_url);
 function update_url() {
 	
@@ -26,7 +28,11 @@ function myfunc() {
 	
 }
 
+
+
+
 </script>
+
 
 <h1 class="page-header">{{ _('Neuer Eintrag') }}</h1>
 <form action="" method="post" name="edit" style="margin-left:30px;">
@@ -42,7 +48,7 @@ function myfunc() {
       {% for error in form.errors.datum %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
-      <label>{{ _('Nachricht:') }}<br>
+      <label>{{ _('Text:') }}<br>
       {{form.text(cols=40, rows=10, style='width:100%;')}}</label><br>
       {% for error in form.errors.text %}
       <span style="color: red;">[{{error}}]</span>
@@ -52,6 +58,15 @@ function myfunc() {
       {% for error in form.errors.url_titel %}
       <span style="color: red;">[{{error}}]</span>
       {% endfor %}<br>
+	  <p><a id="button" style='cursor:pointer;'>Tags eingeben</a></p><br>
+	  <div id="tagsdiv">
+      <label>{{ _('Tags:') }}<br>
+		  <strong>Bitte jeden Tag in neue Zeile posten!</strong><br>
+      {{form.tags(cols=40, rows=10, style='width:100%;')}}</label><br>
+      {% for error in form.errors.tags %}
+      <span style="color: red;">[{{error}}]</span>
+      {% endfor %}<br>
+ 	  </div>
 	  
   </p>
   <p><input type="submit" value="{{ _('abschicken') }}"></p>

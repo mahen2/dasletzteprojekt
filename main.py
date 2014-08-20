@@ -6,7 +6,7 @@
 from flask import Flask, render_template, g, flash, redirect, session, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text, desc
-import hashlib, os, re, random, string
+import hashlib, os, re, random, string, operator
 import operator
 from flask_wtf import Form 
 from flask.ext.login import LoginManager
@@ -124,7 +124,8 @@ class Entry(db.Model):
   url_titel = db.Column(db.String(200))
   datum = db.Column(db.String(200))
   geschriebenvonbenutzername = db.Column(db.String(200))
-  def __init__(self, id, vorname, nachname, titel, strasse, plz, ort, geburtsdatum, festnetz, mobil, email, homepage, twitter):
+  tags = db.Column(db.String(200))
+  def __init__(self, id, titel, text, url_titel, datum, geschriebenvonbenutzername, tags):
       # Initializes the fields with entered data
       # and sets the published date to the current time
       self.id = id
@@ -133,7 +134,7 @@ class Entry(db.Model):
       self.url_titel = url_titel
       self.datum = datum
       self.geschriebenvonbenutzername = geschriebenvonbenutzername
-      
+      self.tags = tags
 
 
 '''
@@ -160,6 +161,7 @@ class EditForm(Form):
     text = TextAreaField('text', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
     url_titel = TextField('url_titel')
     datum = TextField('datum')
+    tags = TextAreaField('tags')
 
 class CommentForm(Form):
     name = TextField('name', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
@@ -173,6 +175,7 @@ class BlogentryForm(Form):
     text = TextAreaField('text', validators = [Required(_(u"Bitte Feld ausfüllen!"))])
     url_titel = TextField('url_titel')
     datum = TextField('datum')
+    tags = TextAreaField('tags')
 
 
 # Suchfeld-Klasse
@@ -212,6 +215,28 @@ class ChangeProfileForm(Form):
 @app.route('/seite/<seite_von>')
 @app.route('/', defaults={'seite_von': 0})
 def hello_world(seite_von):
+    
+    
+    tagliste = []
+    blogeintragid_tags = db.engine.execute(text("SELECT tags FROM blogeintrag "))
+    for line in blogeintragid_tags:
+        if str(line['tags'])=='None':
+            continue
+        else:
+            splitted_tags = str(line['tags']).split('|')
+            for element in splitted_tags:
+                tagliste.append(element)
+    
+    tagdict = {}
+    
+    for element in tagliste:
+        tagdict[element] = tagliste.count(element)
+    
+    sorted_tags = sorted(tagdict.iteritems(), key=operator.itemgetter(1), reverse=True)
+    
+    print sorted_tags
+    
+    
     eintraege_auf_seite = 5
     seite_von = int(seite_von)
     seite_von = seite_von * eintraege_auf_seite
@@ -366,26 +391,43 @@ def search():
 def edit(id):
     form = BlogentryForm()
     searchform = SearchForm(csrf_enabled=False)
-    entries = Entry.query.filter_by(geschriebenvonbenutzername=session['username']).with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).order_by(desc(Entry.id))
+    entries = Entry.query.filter_by(geschriebenvonbenutzername=session['username']).with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername, Entry.tags).order_by(desc(Entry.id))
     te = Entry.query.filter_by(id=id).with_entities(Entry.text).first()
+    ta = Entry.query.filter_by(id=id).with_entities(Entry.tags).first()
+    
     # wenn id gegeben ist, zeige nicht alle Einträge, sondern einen zum bearbeiten
     if id is not None:
         if not form.validate_on_submit():
             form.text.data=te[0]
-        
-        if form.validate_on_submit():
-            liste_urls = db.engine.execute(text("SELECT url_titel FROM blogeintrag WHERE url_titel = :url_titel"), url_titel=form.url_titel.data)
+            list_ta = ta[0].split('|')
+            formatted_tags = "\n".join(list_ta)
+            form.tags.data=formatted_tags
+            
+            
+        if form.validate_on_submit():            
+
+            
+            liste_urls = db.engine.execute(text("SELECT url_titel, id FROM blogeintrag WHERE url_titel = :url_titel"), url_titel=form.url_titel.data)
             for line in liste_urls:
                 if form.url_titel.data == line['url_titel']:
-                    form.url_titel.data = form.url_titel.data+"_"+str(time())
+                    if int(id) != line['id']:
+                        form.url_titel.data = form.url_titel.data+"_"+str(time())
             
             # text()-Funktion escapet den string
-            query = text("UPDATE blogeintrag SET id=:id, titel=:titel, text=:text, url_titel=:url_titel, datum=:datum, geschriebenvonbenutzername=:geschriebenvonbenutzername where id=:id ;")
+            #form.tags.data = form.tags.data.striplines()
+            tags_stripped = form.tags.data.splitlines()
+            form.tags.data = "|".join(tags_stripped)
+            query = text("UPDATE blogeintrag SET id=:id, titel=:titel, text=:text, url_titel=:url_titel, datum=:datum, geschriebenvonbenutzername=:geschriebenvonbenutzername, tags=:tags where id=:id ;")
             flash(_("Eintrag bearbeitet!"), 'accept')
             # Daten ändern
-            db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, geschriebenvonbenutzername=session['username'], id=id)
+            db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, tags=form.tags.data, text=form.text.data, geschriebenvonbenutzername=session['username'], id=id)
+            ta = Entry.query.filter_by(id=id).with_entities(Entry.tags).first()
+            list_ta = ta[0].split('|')
+            formatted_tags = "\n".join(list_ta)
+            form.tags.data=formatted_tags
             
-        entries = Entry.query.filter_by(id=id).with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).first()
+            
+        entries = Entry.query.filter_by(id=id).with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername, Entry.tags).first()
     return render_template('edit.htm', entries=entries, id=id , form=form, searchform=searchform, isactive='edit')  
 
 
@@ -402,8 +444,8 @@ def new():
                 form.url_titel.data = form.url_titel.data+"_"+str(time())
         if form.url_titel.data == '':
             form.url_titel.data = ''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_lowercase) for _ in range(16))
-        query = text("INSERT INTO blogeintrag ('titel', 'url_titel', 'datum', 'text', 'geschriebenvonbenutzername') VALUES (:titel, :url_titel, :datum, :text, :geschriebenvonbenutzername);")
-        db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, geschriebenvonbenutzername=session['username'])
+        query = text("INSERT INTO blogeintrag ('titel', 'url_titel', 'datum', 'text', 'geschriebenvonbenutzername', 'tags') VALUES (:titel, :url_titel, :datum, :text, :geschriebenvonbenutzername, :tags);")
+        db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, tags=form.tags.data, geschriebenvonbenutzername=session['username'])
         flash(_("Eintrag wurde angelegt!"), 'accept')
         return redirect('/new')
     else:
