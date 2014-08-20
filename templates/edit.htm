@@ -5,10 +5,10 @@
 
 
     <ul class="add">
-    <a href="/new"><li><strong style="color:blue;vertical-align:top;">{{ _('neuen Eintrag anlegen') }}</strong></li></a>
+    <a href="/new"><li><strong style="color:blue;vertical-align:top;">{{ _('Einen neuen Eintrag anlegen') }}</strong></li></a>
     </ul>
 
-<h1 class="page-header">{{ _('Einträge bearbeiten') }}</h1>
+<h1 class="page-header">{{ _('Einträge bearbeiten/löschen') }}</h1>
 
 {% if not id: %}
 
@@ -23,11 +23,12 @@
 
         			 {% elif eintrag == line['vorname'] or eintrag == line['name']: %}
                          {{eintrag}}
+
                     {% else: %}
                         <small style="color:#A0A0A0;">{{eintrag}}</small>
                     {% endif %}
-			
-        		{% endfor %}
+			                        
+        		{% endfor %} </br></br>
           </li>  </a>
             {% endfor %}
         </ul>

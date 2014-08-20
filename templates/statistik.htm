@@ -1,0 +1,47 @@
+<!-- extend from base layout -->
+{% extends "index.htm" %}
+
+{% block content %}
+
+
+<h1 class="page-header">{{ _('Statistik') }}</h1>
+
+
+<div>
+    
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+
+          ['Term', 'Anzahl', { role: 'style' },  { role: 'annotation' }],
+                  
+        		{% for key in ranking: %}
+          ['{{key}}', {{ranking[key]}}, '#0B5A83', '{{ranking[key]}}'],
+				{% endfor %}
+
+
+        ]);
+
+        var options = {
+          title: 'Top Terme',
+          vAxis: {title: 'Term',  titleTextStyle: {color: 'black'}},
+			hAxis: {title: 'Anzahl',  titleTextStyle: {color: 'black'}},
+			legend: { position: "none" },
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+
+    <div id="chart_div" style="width: 700px; height: 389px;"></div>
+
+
+</div>
+
+{% endblock %}

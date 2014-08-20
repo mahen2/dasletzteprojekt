@@ -19,7 +19,7 @@
 			
 			<p>{{teile_text_zum_weiterlesen(nl2br(line['text']))[0] | safe}}</p>
 			{%  if teile_text_zum_weiterlesen(nl2br(line['text']))[1]!='': %}
-            <a class="btn btn-primary" href="/artikel/{{line['url_titel']}}">{{ _('weiterlesen ') }}<span class="glyphicon glyphicon-chevron-right"></span></a>
+            <a class="btn btn-primary" href="/artikel/{{line['url_titel']}}">{{ _('Kommentare ') }}<span class="glyphicon glyphicon-chevron-right"></span></a>
 			
 			{% endif %}
 			<hr>
