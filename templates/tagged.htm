@@ -1,0 +1,24 @@
+<!-- extend from base layout -->
+{% extends "index.htm" %}
+
+{% block content %}
+
+
+<h1 class="page-header">{{ _('Tags') }}</h1>
+{{ _('Der Tag') }} <strong><em>{{tag}}</em></strong> {{ _('wurde folgenden Artikeln zugewiesen:') }}<br><br>
+
+
+<ul>
+		{% for line in searchentries: %}
+				<li><a href="/artikel/{{line['url_titel']}}?highlight={{tag}}">{{line['titel']}}</a></li>
+		
+		{% endfor %}
+		{% for row in number_of_results: %}
+		{% if row['anzahl']==0: %}	
+				<li><strong>{{ _('Keine Einträge gefunden!') }}</strong></li>
+		{% endif %}
+		{% endfor %}
+		
+</ul>
+
+{% endblock %}

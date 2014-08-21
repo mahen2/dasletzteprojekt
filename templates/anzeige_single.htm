@@ -14,7 +14,13 @@
 				{{ _('geschrieben von:') }} {{entry.geschriebenvonbenutzername}}<br>
 				{{ _('Datum:') }} {{entry.datum}}
 			</small></p>
-			<p style="text-align:justify;">{{entferne_weiterlesen_marker(nl2br(highlight_word(entry.text, highlight))) | safe}}</p>
+			<p style="text-align:justify;">
+				{{entferne_weiterlesen_marker(nl2br(highlight_word(entry.text, highlight))) | safe}}
+			</p>
+			
+			<p>
+				<small>Tags: {{tags | safe}}</small>
+			</p>
 			<hr />
 			
 			

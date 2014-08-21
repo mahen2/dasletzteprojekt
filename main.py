@@ -211,31 +211,56 @@ class ChangeProfileForm(Form):
     nachname = TextField('nachname', validators = [Required(_("Bitte einen Nachnamen eingeben!"))])
 
 
-# Startseite
-@app.route('/seite/<seite_von>')
-@app.route('/', defaults={'seite_von': 0})
-def hello_world(seite_von):
-    
-    
+def get_tagtuples():
     tagliste = []
     blogeintragid_tags = db.engine.execute(text("SELECT tags FROM blogeintrag "))
     for line in blogeintragid_tags:
-        if str(line['tags'])=='None':
+        if line['tags'].encode('utf-8')=='None':
             continue
         else:
-            splitted_tags = str(line['tags']).split('|')
+            splitted_tags = line['tags'].encode('utf-8').split('|')
             for element in splitted_tags:
-                tagliste.append(element)
+                tagliste.append(element.decode('utf-8'))
     
     tagdict = {}
     
     for element in tagliste:
         tagdict[element] = tagliste.count(element)
     
+    
+    
     sorted_tags = sorted(tagdict.iteritems(), key=operator.itemgetter(1), reverse=True)
     
-    print sorted_tags
+    # tag-größen-algo von stackoverflow
+    fontmin=12
+    fontmax=24
     
+    max_uses = sorted_tags[0][1]
+    min_uses = sorted_tags[-1][1]
+    
+    for idx, element in enumerate(sorted_tags):
+        if element[1]==min_uses:
+            size = fontmin
+        else:
+            size = (float(element[1]) / max_uses) * (fontmax-fontmin) + fontmin
+        
+        a = list(element)
+        a.append(size)
+        element=tuple(a)
+        sorted_tags.pop(idx)
+        sorted_tags.insert(idx, element)
+    
+    print sorted_tags
+    return sorted_tags
+    
+
+
+# Startseite
+@app.route('/seite/<seite_von>')
+@app.route('/', defaults={'seite_von': 0})
+def hello_world(seite_von):
+    
+    tagtuples = get_tagtuples()
     
     eintraege_auf_seite = 5
     seite_von = int(seite_von)
@@ -253,11 +278,14 @@ def hello_world(seite_von):
             seiten = seiten+1
     else:
         seiten = 1
-    return render_template('anzeige.htm', entries=entries, searchform=searchform, anzahl=anzahl, seiten=seiten, seite_von=seite_von, eintraege_auf_seite=eintraege_auf_seite, isactive='blog')   
+    return render_template('anzeige.htm', entries=entries, searchform=searchform, anzahl=anzahl, seiten=seiten, seite_von=seite_von, eintraege_auf_seite=eintraege_auf_seite, isactive='blog', tagtuples=tagtuples)   
     
     
 @app.route('/artikel/<url_titel>', methods = ['GET', 'POST'])
 def artikel(url_titel):
+    
+    tagtuples = get_tagtuples()
+    
     form = CommentForm()
     
     if form.validate_on_submit():
@@ -274,7 +302,7 @@ def artikel(url_titel):
     if request.args.get('highlight'):
         highlight = request.args.get('highlight')
     searchform = SearchForm(csrf_enabled=False)
-    entry = Entry.query.filter_by(url_titel=url_titel).with_entities(Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).first()
+    entry = Entry.query.filter_by(url_titel=url_titel).with_entities(Entry.titel, Entry.text, Entry.tags, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername).first()
     
     blogeintragid_res = db.engine.execute(text("SELECT id FROM blogeintrag WHERE url_titel = :url_titel"), url_titel=url_titel)
     for line in blogeintragid_res:
@@ -282,12 +310,25 @@ def artikel(url_titel):
 
     kommentare = db.engine.execute(text("SELECT * FROM kommentar WHERE blogeintragid = (SELECT id FROM blogeintrag WHERE url_titel = :url_titel)"), url_titel=url_titel)
     
-    return render_template('anzeige_single.htm', entry=entry, searchform=searchform, highlight=highlight,kommentare=kommentare, form=form, blogeintragid=blogeintragid, isactive='blog', title=entry.titel)
+    tags_raw = entry.tags.encode('utf-8').split('|')
+    print "raw:"+str(tags_raw)
+    #unicode hack und link:
+    for idx,e in enumerate(tags_raw):
+        e = e.decode('utf-8')
+        e2 = "<a href='/tagged/" + e + "'>" + e + "</a>"
+        tags_raw.pop(idx)
+        tags_raw.insert(idx, e2)
+    
+    tags = u", ".join(tags_raw)
+    
+    return render_template('anzeige_single.htm', entry=entry, searchform=searchform, highlight=highlight,kommentare=kommentare, form=form, blogeintragid=blogeintragid, isactive='blog', title=entry.titel, tags=tags, tagtuples=tagtuples)
 
 
 # Profilseite, bisher zum Passwort ändern
 @app.route('/register', methods = ['GET', 'POST'])
 def register(): 
+    tagtuples = get_tagtuples()
+    
     searchform = SearchForm(csrf_enabled=False)
     registerform = RegisterForm()
     if registerform.validate_on_submit():
@@ -304,7 +345,7 @@ def register():
         db.engine.execute(query, username=registerform.username.data, passwort=hashlib.md5(registerform.password1.data+salt).hexdigest(), vorname=registerform.vorname.data, nachname=registerform.nachname.data, salt=salt)
         
         flash(_("Benutzer wurde registriert!"),'accept')
-    return render_template('register.htm', searchform=searchform, registerform=registerform, isactive='register')   
+    return render_template('register.htm', searchform=searchform, registerform=registerform, isactive='register', tagtuples=tagtuples)   
 
 
 
@@ -312,6 +353,8 @@ def register():
 @app.route('/password', methods = ['GET', 'POST'])
 @login_required
 def password(): 
+    tagtuples = get_tagtuples()
+    
     searchform = SearchForm(csrf_enabled=False)
     passwordform = ChangePassForm()
     if passwordform.validate_on_submit():
@@ -326,11 +369,13 @@ def password():
         else:
             flash(_("Altes Passwort ist falsch!"),'error')
         
-    return render_template('password.htm', searchform=searchform, passwordform=passwordform, isactive='profile')   
+    return render_template('password.htm', searchform=searchform, passwordform=passwordform, isactive='profile', tagtuples=tagtuples)   
     
 @app.route('/profile', methods = ['GET', 'POST'])
 @login_required
 def profile(): 
+    tagtuples = get_tagtuples()
+    
     searchform = SearchForm(csrf_enabled=False)
     profileform = ChangeProfileForm()
     if profileform.validate_on_submit():
@@ -340,13 +385,15 @@ def profile():
     userdata = User.query.filter_by(username=session['username']).with_entities(User.vorname,User.nachname).first()
    
         
-    return render_template('profile.htm', searchform=searchform, profileform=profileform, userdata=userdata, isactive='profile')   
+    return render_template('profile.htm', searchform=searchform, profileform=profileform, userdata=userdata, isactive='profile', tagtuples=tagtuples)   
 
 
 
 # Textanalyse UNFERTIG
 @app.route('/statistik')
-def wort_statistik(): 
+def wort_statistik():
+    tagtuples = get_tagtuples()
+     
     searchform = SearchForm(csrf_enabled=False)
     entries=Entry.query.with_entities(Entry.titel, Entry.text) 
     blogtexte = db.engine.execute('SELECT text FROM blogeintrag;')
@@ -366,12 +413,14 @@ def wort_statistik():
     ranking = dict(sorted(wordcount.iteritems(), key=operator.itemgetter(1), reverse=True)[:10])
 
 
-    return render_template('statistik.htm', ranking=ranking, entries=entries, searchform=searchform, isactive='statistik')  
+    return render_template('statistik.htm', ranking=ranking, entries=entries, searchform=searchform, isactive='statistik', tagtuples=tagtuples)  
 
 
 # Suchformular
 @app.route('/search', methods = ['GET', 'POST'])
 def search(): 
+    tagtuples = get_tagtuples()
+    
     searchform = SearchForm(csrf_enabled=False)
     if request.args['searchfield']:
         begriff = request.args['searchfield']
@@ -382,13 +431,45 @@ def search():
         number_of_results = db.engine.execute(text("SELECT count(id) as anzahl from blogeintrag where text like :begriff_trunk or titel like :begriff_trunk"), begriff_trunk=begriff_trunk)
     else:
         return redirect('/')
-    return render_template('search.htm', searchform=searchform, begriff=begriff, searchentries=searchentries, number_of_results=number_of_results)    
+    return render_template('search.htm', searchform=searchform, begriff=begriff, searchentries=searchentries, number_of_results=number_of_results, tagtuples=tagtuples)    
+ 
+ 
+ # Impressum
+@app.route('/impressum', methods = ['GET', 'POST'])
+def impressum(): 
+    tagtuples = get_tagtuples()
+    
+    searchform = SearchForm(csrf_enabled=False)
+    return render_template('impressum.htm', searchform=searchform, tagtuples=tagtuples)    
+ 
+ 
+ 
+ # Tags
+@app.route('/tagged/<tag>', methods = ['GET', 'POST'])
+def tagged(tag): 
+    tagtuples = get_tagtuples()
+    
+    searchform = SearchForm(csrf_enabled=False)
+    if tag:
+        tag_trunk1 = '%' +tag+'|%'
+        tag_trunk2 = '%|'+tag+'%'
+         # in allen Feldern suchen, auch Bestandteil-Suche erlauben (deshalb Anfang und Ende mit % trunkiert)
+        query = text("SELECT titel,text,url_titel FROM blogeintrag WHERE tags like :tag_trunk1 or tags like :tag_trunk2 or tags like :tag group by id; ")
+        searchentries = db.engine.execute(query, tag_trunk1=tag_trunk1, tag_trunk2=tag_trunk2, tag=tag)
+
+        number_of_results = db.engine.execute(text("SELECT count(id) as anzahl FROM blogeintrag WHERE tags like :tag_trunk1 or tags like :tag_trunk2 or tags like :tag ;"), tag_trunk1=tag_trunk1, tag_trunk2=tag_trunk2, tag=tag)
+    else:
+        return redirect('/')
+    return render_template('tagged.htm', searchform=searchform, tag=tag, searchentries=searchentries, number_of_results=number_of_results, tagtuples=tagtuples)    
+ 
+ 
  
 # Einträge zum bearebiten anzeigen oder Einzeleinträge bearbeiten
 @app.route('/edit', defaults={'id': None})
 @app.route('/edit/<id>', methods = ['GET', 'POST'])
 @login_required
 def edit(id):
+    
     form = BlogentryForm()
     searchform = SearchForm(csrf_enabled=False)
     entries = Entry.query.filter_by(geschriebenvonbenutzername=session['username']).with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername, Entry.tags).order_by(desc(Entry.id))
@@ -428,13 +509,16 @@ def edit(id):
             
             
         entries = Entry.query.filter_by(id=id).with_entities(Entry.id,Entry.titel, Entry.text, Entry.url_titel, Entry.datum, Entry.geschriebenvonbenutzername, Entry.tags).first()
-    return render_template('edit.htm', entries=entries, id=id , form=form, searchform=searchform, isactive='edit')  
+    tagtuples = get_tagtuples()
+    
+    return render_template('edit.htm', entries=entries, id=id , form=form, searchform=searchform, isactive='edit', tagtuples=tagtuples)  
 
 
 # Neuen Eintrag anlegen
 @app.route('/new', methods = ['GET', 'POST'])
 @login_required
 def new():
+    
     searchform = SearchForm(csrf_enabled=False)
     form = BlogentryForm()
     if form.validate_on_submit():
@@ -444,12 +528,18 @@ def new():
                 form.url_titel.data = form.url_titel.data+"_"+str(time())
         if form.url_titel.data == '':
             form.url_titel.data = ''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_lowercase) for _ in range(16))
+        tags_stripped = form.tags.data.splitlines()
+        form.tags.data = "|".join(tags_stripped)
+        
         query = text("INSERT INTO blogeintrag ('titel', 'url_titel', 'datum', 'text', 'geschriebenvonbenutzername', 'tags') VALUES (:titel, :url_titel, :datum, :text, :geschriebenvonbenutzername, :tags);")
         db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, tags=form.tags.data, geschriebenvonbenutzername=session['username'])
         flash(_("Eintrag wurde angelegt!"), 'accept')
+        
         return redirect('/new')
     else:
-        return render_template('new.htm', form=form, searchform=searchform, zeit=str(datetime.now().strftime('%d.%m.%Y')), isactive='new')
+        tagtuples = get_tagtuples()
+        
+        return render_template('new.htm', form=form, searchform=searchform, zeit=str(datetime.now().strftime('%d.%m.%Y')), isactive='new', tagtuples=tagtuples)
     
     
 # Eintrag löschen
@@ -465,6 +555,8 @@ def delete(id):
 # Einloggen
 @app.route('/login', methods = ['GET', 'POST']) 
 def login():
+    tagtuples = get_tagtuples()
+    
     searchform = SearchForm(csrf_enabled=False)
     form = LoginForm()
     if form.validate_on_submit():
@@ -486,7 +578,7 @@ def login():
             flash(_('Benutzername oder Passwort falsch!'), 'error')
 
     return render_template('login.htm', 
-        form = form, searchform=searchform, isactive='login')
+        form = form, searchform=searchform, isactive='login', tagtuples=tagtuples)
 
 # Ausloggen
 @app.route('/logout')
