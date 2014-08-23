@@ -26,7 +26,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'jHgFtjjGFdE5578ijbDDegh'
 app.config['CSRF_ENABLED'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.sqlite'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:test@localhost:3306/test' zum testen mit mysql (funktioniert)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:test@localhost:3306/test'
+# zum testen mit mysql (funktioniert) zum anlegen der mysql-tabellen kann 'importfile_fuer_mysqltest.sql' benutzt werden
 db = SQLAlchemy(app)
 babel = Babel(app)
 lm = LoginManager()

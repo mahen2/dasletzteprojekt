@@ -32,6 +32,8 @@ config.json
 *.log
 *.sql
 *.sqlite
+!blog.sqlite
+!importfile_fuer_mysqltest.sql
 
 # OS generated files #
 ######################
