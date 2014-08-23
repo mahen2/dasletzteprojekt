@@ -26,6 +26,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'jHgFtjjGFdE5578ijbDDegh'
 app.config['CSRF_ENABLED'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.sqlite'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:test@localhost:3306/test' zum testen mit mysql (funktioniert)
 db = SQLAlchemy(app)
 babel = Babel(app)
 lm = LoginManager()
@@ -289,7 +290,7 @@ def artikel(url_titel):
     form = CommentForm()
     
     if form.validate_on_submit():
-        query = text("INSERT INTO kommentar ('name','email','url','text','datum', 'blogeintragid') VALUES ( :name,:email,:url,:text,:datum,:blogeintragid);")
+        query = text("INSERT INTO kommentar (`name`,`email`,`url`,`text`,`datum`, `blogeintragid`) VALUES ( :name,:email,:url,:text,:datum,:blogeintragid);")
         db.engine.execute(query, name=form.name.data, email=form.email.data, url=form.url.data, text=form.text.data, datum=str(datetime.now().strftime('%d.%m.%Y - %H:%M Uhr')), blogeintragid=form.blogeintragid.data)
         flash(_("Kommentar wurde angelegt!"), 'accept')
         return redirect('/artikel/'+ url_titel)
@@ -341,7 +342,7 @@ def register():
 
         
         
-        query = text("INSERT INTO benutzer ('id', 'username', 'passwort', 'vorname', 'nachname', 'salt') VALUES (NULL, :username, :passwort, :vorname, :nachname, :salt);")
+        query = text("INSERT INTO benutzer (`id`, `username`, `passwort`, `vorname`, `nachname`, `salt`) VALUES (NULL, :username, :passwort, :vorname, :nachname, :salt);")
         db.engine.execute(query, username=registerform.username.data, passwort=hashlib.md5(registerform.password1.data+salt).hexdigest(), vorname=registerform.vorname.data, nachname=registerform.nachname.data, salt=salt)
         
         flash(_("Benutzer wurde registriert!"),'accept')
@@ -531,7 +532,7 @@ def new():
         tags_stripped = form.tags.data.splitlines()
         form.tags.data = "|".join(tags_stripped)
         
-        query = text("INSERT INTO blogeintrag ('titel', 'url_titel', 'datum', 'text', 'geschriebenvonbenutzername', 'tags') VALUES (:titel, :url_titel, :datum, :text, :geschriebenvonbenutzername, :tags);")
+        query = text("INSERT INTO blogeintrag (`titel`, `url_titel`, `datum`, `text`, `geschriebenvonbenutzername`, `tags`) VALUES (:titel, :url_titel, :datum, :text, :geschriebenvonbenutzername, :tags);")
         db.engine.execute(query, titel=form.titel.data, url_titel=form.url_titel.data, datum=form.datum.data, text=form.text.data, tags=form.tags.data, geschriebenvonbenutzername=session['username'])
         flash(_("Eintrag wurde angelegt!"), 'accept')
         
