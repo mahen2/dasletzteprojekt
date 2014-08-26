@@ -4,7 +4,7 @@ Probleme und Lösungen
 Artikel-URL
 -----------
 
-* Bei der URL-Generierung wird der Titel genutzt. Der gleiche Artikel-Titel darf prinzipiell zweimal vorkommen, die URL muss aber einmalig sein, deshlab wird eien Unix-Timestamp angehängt, falls es den Titel schon in der DB gibt.
+* Bei der URL-Generierung wird der Titel genutzt. Der gleiche Artikel-Titel darf prinzipiell zweimal vorkommen, die URL muss aber einmalig sein, deshalb wird eine Unix-Timestamp angehängt, falls es den Titel schon in der DB gibt.
 * Der URL-Titel wird leergelassen, wenn Javascript aus ist und der User vergisst, manuell etwas einzutragen. Damit es trotzdem eine eindeutige URL gibt, wird der URL-Titel für den Link aus einem Zufallsstring erzeugt.
 
 Datenbank
